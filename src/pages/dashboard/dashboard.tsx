@@ -7,6 +7,8 @@ import Subject from './_components/subject/subject'
 import Course from './_components/course/course'
 import Registration from './_components/registration/registration'
 import Pricing from './_components/pricing/pricing'
+import Comment from './_components/comment/comment'
+import Blog from './_components/blog/blog'
 
 const Dashboard: React.FC = () => {
     return (
@@ -20,6 +22,8 @@ const Dashboard: React.FC = () => {
             <Course />
             <Registration />
             <Pricing />
+            <Comment />
+            <Blog />
         </main>
     )
 }

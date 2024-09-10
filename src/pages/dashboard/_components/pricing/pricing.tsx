@@ -27,14 +27,14 @@ const listPricing: Price[] = [
 const Pricing = () => {
     return (
         <div id="pricing" className="my-4 my-xl-5 py-4 py-xl-5">
-            <div className="container text-center">
-                <button className="btn btn-lg btn-outline-primary mb-3" disabled>
-                    Registration
+            <div className="container">
+                <button className="btn btn-lg btn-outline-primary d-block mx-md-auto mb-3" disabled>
+                    Pricing Plan
                 </button>
-                <h1 className="fw-bold mb-4">
+                <h1 className="fw-bold mb-4 text-start text-md-center">
                     Choose The Best Package For your Learning
                 </h1>
-                <div className="row row-cols-1 row-cols-md-2 row-cols-xl-3 my-4 my-xl-5">
+                <div className="row row-cols-1 row-cols-md-2 row-cols-xl-3 gy-3 my-4 my-xl-5">
                     {listPricing.map((items) => {
                         return (
                             <>

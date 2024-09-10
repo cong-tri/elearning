@@ -82,3 +82,37 @@ To further refine this, I would need more details, such as:
 - **Specific Feature Requests:** Any additional specific features or challenges you'd like to include (e.g., peer grading, live sessions)?
 
 Let me know if you'd like to explore any of these areas in more detail!
+
+Pages:
++++ User: 
+  1.home 
+  2.course (list course) 
+  3.authen(login/register) 
+  4.course detail 
+  5.cart
+  6.zoom (list link course' zoom) (Change pratice to zoom)
+  7.blog
+  8.blog detail
+  9.event
+  10.event detail
+  11.contact
++++ Admin:
+  1.home
+  2.profile
+  3.list course
+  4.setting
+  5.add new course
+  5.list quiz
++++ student:
+  1.home
+  2.profile
+  3.my course
+  4.setting
+  5.my quiz
+
+
+--Trí :
++User: home, course, authen(login/register), course-detail, cart
++Admin: home, add new course, 
+--Ngọc : Practice, about, Profile, setting
+--Linh : blog, event, admin-course ,Quiz

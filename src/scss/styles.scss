@@ -9,6 +9,17 @@ h1, h2, h3, h4, h5, h6, p{
     margin: 0;
 }
 
+header{
+    #header-logo{
+        width: 100px;
+        max-height: 100px;
+    }
+}
+
+footer{
+    background-color: $bgColor-blue2;
+}
+
 #dashboard{
     #banner{
         height: 100%;
@@ -45,5 +56,15 @@ h1, h2, h3, h4, h5, h6, p{
             }
         }
     }
-
+    #blog{
+        background-color: $bgColor-blue1;
+        #img-item1{
+            height: 400px;
+            object-fit: contain;
+        }
+        #img-item2{
+            height: 200px;
+            object-fit: contain;
+        }
+    }
 }

@@ -2,15 +2,15 @@ import Lottie from "lottie-react";
 import register from "./register.json";
 const Registration = () => {
     return (
-        <div id="registration" className="container my-4 my-xl-5 text-center">
-            <button className="btn btn-lg btn-outline-primary mb-3" disabled>
+        <div id="registration" className="container my-4 my-xl-5">
+            <button className="btn btn-lg btn-outline-primary d-block mx-md-auto mb-3" disabled>
                 Registration
             </button>
-            <h1 className="fw-bold mb-4">
+            <h1 className="fw-bold mb-4 text-start text-md-center">
                 Register Your Account Get free access to{" "}
                 <span className="text-warning">60000</span> online course
             </h1>
-            <h5 className="fw-bold">
+            <h5 className="fw-bold text-center">
                 Learn Something new & Build Your Career From Anywhere In The World
             </h5>
             <div className="row justify-content-between align-items-center">
