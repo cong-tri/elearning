@@ -2,11 +2,16 @@ $bgColor-blue1: #D1E9F6;
 $bgColor-blue2: #3795BD;
 
 body{
-    background-color: #F7F7F8;
+    background-color: #F5F5F5;
 }
 
 h1, h2, h3, h4, h5, h6, p{
     margin: 0;
+}
+
+// antd css
+.ant-layout-header{
+    height: auto;
 }
 
 header{
@@ -20,7 +25,7 @@ footer{
     background-color: $bgColor-blue2;
 }
 
-#dashboard{
+#home{
     #banner{
         height: 100%;
         background-color: $bgColor-blue2;
@@ -69,3 +74,22 @@ footer{
     }
 }
 
+#breadcrumb{
+    background-color: $bgColor-blue1;
+    margin-top: 6rem;
+    #breadcrumb-content{
+        height: 300px;
+        text-align: center;
+    }
+}
+
+#authen{
+    .authen-btn-tab{
+        width: 300px;
+        transition: all 0.5s;
+        &:hover{
+            background-color: #0d6efd;
+            color: white;
+        }
+    }
+}
