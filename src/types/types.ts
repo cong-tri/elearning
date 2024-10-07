@@ -4,7 +4,6 @@ export interface ICategory {
   title: string;
   created_by: string;
   type: string;
-  category_id: string;
 }
 
 export interface ICourses {
@@ -16,9 +15,8 @@ export interface ICourses {
   level: string;
   price: string;
   lessons: number;
-  createBy: string;
-  createAt: Date | string;
-  course_id: string;
+  created_by: string;
+  created_at: Date | string;
 }
 
 export interface IBlogs {

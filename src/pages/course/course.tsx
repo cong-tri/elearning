@@ -210,10 +210,11 @@ const Course = () => {
                                             <div className="bg-white rounded-3 p-3 shadow-lg h-100 ">
                                                 <div className="card h-100 position-relative">
                                                     <img
-                                                        className="card-img-top h-100 img-fluid"
+                                                        className="card-img-top img-fluid"
+                                                        style={{ height: 250 }}
                                                         src={items.image}
                                                         width={"100%"}
-                                                        height={"100%"}
+                                                        // height={"100%"}
                                                         alt={items.title}
                                                     />
                                                     <div className="position-absolute top-0 start-0 bg-primary text-white text-uppercase p-1 rounded-2">
@@ -248,7 +249,7 @@ const Course = () => {
                                                     <div className="card-footer">
                                                         <p>
                                                             Instructor:{" "}
-                                                            <span className="fw-bold">{items.createBy}</span>
+                                                            <span className="fw-bold">{items.created_by}</span>
                                                         </p>
                                                     </div>
                                                 </div>

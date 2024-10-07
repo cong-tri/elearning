@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
@@ -13,11 +13,9 @@ import Input from "../../../../components/input";
 import { message } from "antd";
 
 import { keyCollection } from "../../../../constants/constants";
-import { MainContext } from "../../../../context/main-provider";
 
 const defaultValue: ICourses = {
     id: "",
-    course_id: "",
     title: "",
     tag: "",
     level: "",
@@ -25,17 +23,15 @@ const defaultValue: ICourses = {
     image: "",
     description: "",
     price: "",
-    createAt: moment().format(),
-    createBy: "Dao Cong Tri",
+    created_at: moment().format(),
+    created_by: "",
 }
 
 const FormAddNewCourse = ({ category, id }: { category: ICategory[]; id: string }) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const { data } = useContext(MainContext)
 
     const [formData, setFormData] = useState<ICourses>(defaultValue);
-    const [userId, setUserId] = useState<string>();
 
     const handleChange = (
         e: React.ChangeEvent<
@@ -44,19 +40,6 @@ const FormAddNewCourse = ({ category, id }: { category: ICategory[]; id: string 
     ) => {
         setFormData({ ...formData, [e.currentTarget.name]: e.currentTarget.value });
     };
-
-    useEffect(() => {
-        if (!data?.course) {
-            return
-        }
-        const existingIds = data.course
-            .map((courses) => parseInt(courses.course_id))
-            .filter((id) => !isNaN(id));
-        const nextId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
-        setUserId(nextId.toString());
-        console.log(nextId);
-    }, [data]);
-
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -70,13 +53,10 @@ const FormAddNewCourse = ({ category, id }: { category: ICategory[]; id: string 
         }
 
         const { id: cour_id, ...data } = formData;
-        if (!userId) {
-            return
-        }
 
         if (cour_id === "") {
             console.log(data);
-            data.course_id = userId
+
             await addDoc(collection(firebaseStore, keyCollection.courses), data);
             message.success("Create new course successfully", 2);
 
@@ -118,20 +98,6 @@ const FormAddNewCourse = ({ category, id }: { category: ICategory[]; id: string 
                 <div className="card-body">
                     <form action="" onSubmit={handleSubmit}>
                         <div className="row row-cols-3">
-                            <div className="col">
-                                <Input
-                                    id="course_id"
-                                    label="ID"
-                                    name="course_id"
-                                    classnameDiv="form-floating mb-4"
-                                    classnameInput="form-control form-control-lg"
-                                    type="text"
-                                    maxlength={10}
-                                    readonly={true}
-                                    value={formData.course_id}
-                                    onChange={handleChange}
-                                />
-                            </div>
                             <div className="col">
                                 <Input
                                     id="title"
@@ -222,25 +188,25 @@ const FormAddNewCourse = ({ category, id }: { category: ICategory[]; id: string 
                             </div>
                             <div className="col">
                                 <Input
-                                    id="createBy"
-                                    name="createBy"
+                                    id="created_by"
+                                    name="created_by"
                                     label="Create By"
                                     classnameDiv="form-floating mb-4"
                                     classnameInput="form-control form-control-lg"
                                     type="text"
-                                    value={formData.createBy}
+                                    value={formData.created_by}
                                     onChange={handleChange}
                                 />
                             </div>
                             <div className="col">
                                 <Input
-                                    id="createAt"
-                                    name="createAt"
+                                    id="created_at"
+                                    name="created_at"
                                     label="Create At"
                                     classnameDiv="form-floating mb-4"
                                     classnameInput="form-control form-control-lg"
                                     type="text"
-                                    value={formData.createAt as string}
+                                    value={formData.created_at as string}
                                     readonly={true}
                                     onChange={handleChange}
                                 />
@@ -285,12 +251,6 @@ const validateFormData = (data: ICourses) => {
     } else if (isNaN(Number(data.price)) || Number(data.price) < 0) {
         errors.price = "Price must be a valid number and non-negative";
     }
-
-    // if (!data.course_id.trim()) {
-    //     errors.course_id = "Course ID is required";
-    // } else if (data.course_id.length > 10) {
-    //     errors.course_id = "Course ID must be 10 characters or less";
-    // }
 
     if (!data.tag.trim()) {
         errors.tag = "Tag is required";

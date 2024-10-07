@@ -28,11 +28,6 @@ const AdminCourse = () => {
 
     const columns = [
         {
-            title: "Id",
-            dataIndex: "course_id",
-            key: "course_id",
-        },
-        {
             title: "Title",
             dataIndex: "title",
             key: "title",
@@ -56,6 +51,11 @@ const AdminCourse = () => {
             title: "Lessons",
             dataIndex: "lessons",
             key: "lessons",
+        },
+        {
+            title: "Created By",
+            dataIndex: "created_by",
+            key: "created_by",
         },
         {
             title: "Action",

@@ -44,7 +44,7 @@ export const useGetCourse = () => {
     queryFn: () => {
       const q = query(
         collection(firebaseStore, keyCollection.courses),
-        orderBy("course_id")
+        orderBy("title")
       );
       getDocs(q).then((querySnapshot) => {
         const data = querySnapshot.docs.map((doc) => {
@@ -52,6 +52,7 @@ export const useGetCourse = () => {
           item.id = doc.id;
           return item;
         });
+        console.log(data);
 
         setCourses(data);
         return data;

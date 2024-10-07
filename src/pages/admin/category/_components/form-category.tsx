@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Input from "../../../../components/input";
@@ -13,11 +13,9 @@ import { firebaseStore } from "../../../../firebase-config";
 import { message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { keyCollection } from "../../../../constants/constants";
-import { MainContext } from "../../../../context/main-provider";
 
 const defaultValue: ICategory = {
     id: "",
-    category_id: "",
     title: "",
     type: "",
     created_at: moment().format(),
@@ -28,22 +26,8 @@ const FormAddNewCategory = ({ id }: { id: string }) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const { data } = useContext(MainContext)
-
     const [formData, setFormData] = useState<ICategory>(defaultValue);
-    const [categoryId, setCategoryId] = useState<string>();
 
-    useEffect(() => {
-        if (!data?.categories) {
-            return
-        }
-        const existingIds = data.categories
-            .map((category) => parseInt(category.category_id))
-            .filter((id) => !isNaN(id));
-        const nextId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
-        setCategoryId(nextId.toString());
-        console.log(nextId);
-    }, [data]);
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
@@ -66,10 +50,6 @@ const FormAddNewCategory = ({ id }: { id: string }) => {
         }
 
         const { id: cate_id, ...data } = formData;
-        if (!categoryId) {
-            return
-        }
-        data.category_id = categoryId;
 
         if (cate_id === "") {
             await addDoc(collection(firebaseStore, keyCollection.categories), data);
@@ -114,20 +94,6 @@ const FormAddNewCategory = ({ id }: { id: string }) => {
                 <div className="card-body">
                     <form action="" onSubmit={handleSubmit}>
                         <div className="row row-cols-3">
-                            <div className="col">
-                                <Input
-                                    id="category_id"
-                                    name="category_id"
-                                    label="Category ID"
-                                    classnameDiv="form-floating mb-4"
-                                    classnameInput="form-control form-control-lg"
-                                    type="text"
-                                    maxlength={10}
-                                    readonly={true}
-                                    value={formData.category_id}
-                                    onChange={handleChange}
-                                />
-                            </div>
                             <div className="col">
                                 <Input
                                     id="title"

@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 import { MainContext } from "../../../context/main-provider";
 
-import { Courses } from "../../../types/types";
+import { ICourses } from "../../../types/types";
 
 const MoreCourse = ({ tag }: { tag: string }) => {
     const { data } = useContext(MainContext);
     const navigate = useNavigate()
 
-    const [course, setCourse] = useState<Courses[]>();
+    const [course, setCourse] = useState<ICourses[]>();
 
     useEffect(() => {
         if (!data?.course || tag === "") return;
@@ -71,7 +71,7 @@ const MoreCourse = ({ tag }: { tag: string }) => {
                                         <div className="card-footer">
                                             <p>
                                                 Instructor:{" "}
-                                                <span className="fw-bold">{items.createBy}</span>
+                                                <span className="fw-bold">{items.created_by}</span>
                                             </p>
                                         </div>
                                     </div>

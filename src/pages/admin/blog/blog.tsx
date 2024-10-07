@@ -30,11 +30,11 @@ const AdminBlog = () => {
     }, [data]);
 
     const columns = [
-        {
-            title: "Id",
-            dataIndex: "blog_id",
-            key: "blog_id",
-        },
+        // {
+        //     title: "Id",
+        //     dataIndex: "blog_id",
+        //     key: "blog_id",
+        // },
         {
             title: "Title",
             dataIndex: "title",

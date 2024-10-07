@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { collection, doc, getFirestore, writeBatch } from "firebase/firestore";
-import { listCourse } from "./constants/constants";
+// import { keyCollection, listCourses } from "./constants/constants";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCIjRsvwi79tpta1hP8RuxZ_wQyxWbA690",
@@ -21,8 +21,8 @@ export const firebaseStore = getFirestore(firebaseApp);
 // const addMultiDocs = async () => {
 //   const batch = writeBatch(firebaseStore);
 
-//   const collectionRef = collection(firebaseStore, "courses");
-//   listCourse.forEach((data) => {
+//   const collectionRef = collection(firebaseStore, keyCollection.courses);
+//   listCourses.forEach((data) => {
 //     const docRef = doc(collectionRef);
 //     batch.set(docRef, data);
 //   });

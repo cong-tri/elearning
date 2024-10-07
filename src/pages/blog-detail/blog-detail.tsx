@@ -1,7 +1,26 @@
+import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Input from "../../components/input";
 import Breadcrumb from "../../components/user/breadcrumb";
+import { IBlogs } from "../../types/types";
+import { MainContext } from "../../context/main-provider";
 
 const BlogDetail = () => {
+    const { id } = useParams<{ id: string }>();
+
+    const { data } = useContext(MainContext);
+    const [detail, setDetail] = useState<IBlogs>();
+
+    useEffect(() => {
+        if (!data?.blogs) return;
+
+        const detail = data.blogs.filter((items) => {
+            return items.id === id;
+        });
+        console.log(detail);
+
+        setDetail(detail[0]);
+    }, [data, id]);
     return (
         <>
             <Breadcrumb data={{ label: "Blog Detail", path: "Blog Detail" }} />
@@ -18,27 +37,16 @@ const BlogDetail = () => {
                                     width={1300}
                                 />
                             </div>
+                            <h1>{detail?.title}</h1>
                             <p>
-                                We have covered many special events such as fireworks, fairs,
-                                parades, races, walks, awards ceremonies, fashion shows,
-                                sporting events, and even a memorial service.
+                                {detail?.content_1}
                             </p>
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Curabitur vulputate vestibulum Phasellus rhoncus, dolor eget
-                                viverra pretium, dolor tellus aliquet nunc, vitae ultricies erat
-                                elit eu lacus. Vestibulum non justo consectetur, cursus ante,
-                                tincidunt sapien. Nulla quis diam sit amet turpis interdum
-                                accumsan quis nec enim. Vivamus faucibus ex sed nibh egestas
-                                elementum. Mauris et bibendum dui. Aenean consequat pulvinar
-                                luctus. Suspendisse consectetur tristique tortor
+                                {detail?.content_2}
                             </p>
-                            <h3>Experience is now the world skill</h3>
+                            <h3>{detail?.label_1}</h3>
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Curabitur placerat, velit vel ultricies efficitur, purus eros
-                                varius leo, non blandit eros lorem ac odio. Curabitur
-                                scelerisque vehicula.
+                                {detail?.content_3}
                             </p>
                             <div className="row mb-4 align-items-center">
                                 <div className="col-md-4">
@@ -76,7 +84,7 @@ const BlogDetail = () => {
                                     </ul>
                                 </div>
                             </div>
-                            <h3>Experience is over the world visit</h3>
+                            <h3>{detail?.label_2}</h3>
                             <p>
                                 We have covered many special events such as fireworks, fairs,
                                 parades, races, walks, awards ceremonies, fashion shows,

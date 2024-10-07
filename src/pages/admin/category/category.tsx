@@ -66,7 +66,6 @@ const AdminCategory = () => {
                         <table className="table table-bordered table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th scope="col">ID</th>
                                     <th scope="col">Title</th>
                                     <th scope="col">Type</th>
                                     <th scope="col">Created By</th>
@@ -77,7 +76,6 @@ const AdminCategory = () => {
                                 {category?.map((items) => {
                                     return (
                                         <tr>
-                                            <td>{items.category_id}</td>
                                             <td>{items.title}</td>
                                             <td>{items.type}</td>
                                             <td>{items.created_by}</td>
