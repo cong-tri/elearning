@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
+import { collection, doc, getFirestore, writeBatch } from "firebase/firestore";
+import { listCourse } from "./constants/constants";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCIjRsvwi79tpta1hP8RuxZ_wQyxWbA690",
@@ -16,3 +17,21 @@ const firebaseConfig = {
 export const firebaseApp = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(firebaseApp);
 export const firebaseStore = getFirestore(firebaseApp);
+
+// const addMultiDocs = async () => {
+//   const batch = writeBatch(firebaseStore);
+
+//   const collectionRef = collection(firebaseStore, "courses");
+//   listCourse.forEach((data) => {
+//     const docRef = doc(collectionRef);
+//     batch.set(docRef, data);
+//   });
+
+//   try {
+//     await batch.commit();
+//     console.log("Batch write successfully completed!");
+//   } catch (error) {
+//     console.error("Error writing batch:", error);
+//   }
+// };
+// addMultiDocs();

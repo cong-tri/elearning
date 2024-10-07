@@ -5,7 +5,7 @@ import { MainContext } from "../../context/main-provider";
 
 import Breadcrumb from "../../components/user/breadcrumb";
 
-import { Category, Courses } from "../../types/types";
+import { ICategory, ICourses } from "../../types/types";
 import moment from "moment";
 import Navtabs from "./_components/navtabs";
 import MoreCourse from "./_components/more-course";
@@ -14,22 +14,22 @@ const CourseDetail = () => {
     const { id } = useParams<{ id: string }>();
 
     const { data } = useContext(MainContext);
-    const [detail, setDetail] = useState<Courses>();
-    const [category, setCategory] = useState<Category>();
+    const [detail, setDetail] = useState<ICourses>();
+    const [category, setCategory] = useState<ICategory>();
 
     useEffect(() => {
-        if (!data?.course || !data?.category) return;
+        if (!data?.course || !data?.categories) return;
 
         const courseDetail = data.course.filter((items) => {
             return items.id === id;
         });
-        const value = data.category.filter((items) => {
+        const value = data.categories.filter((items) => {
             return items.type === courseDetail[0].tag;
         });
 
         setCategory(value[0]);
         setDetail(courseDetail[0]);
-    }, [data?.course, data?.category, id]);
+    }, [data, id]);
     return (
         <>
             <Breadcrumb data={{ label: "Course Details", path: "Course Details" }} />

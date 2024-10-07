@@ -1,12 +1,14 @@
-export type Category = {
-  createdAt: Date;
-  title: string;
-  createBy: string;
-  type: string;
+export interface ICategory {
   id: string;
-};
+  created_at: Date | string;
+  title: string;
+  created_by: string;
+  type: string;
+  category_id: string;
+}
 
-export type Courses = {
+export interface ICourses {
+  id: string;
   title: string;
   image: string;
   description: string;
@@ -16,21 +18,14 @@ export type Courses = {
   lessons: number;
   createBy: string;
   createAt: Date | string;
-  id: string;
-};
+  course_id: string;
+}
 
-export type Users = {
-  address: {
-    geolocation: {
-      lat: string;
-      long: string;
-    };
-    city: string;
-    street: string;
-    number: number;
-    zipcode: string;
-  };
-  id: number;
+export interface IUsers {
+  address: string;
+  user_id: string;
+  code: string;
+  id: string;
   email: string;
   username: string;
   password: string;
@@ -39,11 +34,16 @@ export type Users = {
     lastname: string;
   };
   phone: string;
-  __v: number;
+  created_at: Date | string;
+  created_by: string;
+  role: "admin" | "user";
+}
+
+export type IDataMainProvider = {
+  categories: ICategory[];
+  course: ICourses[];
 };
 
-export type DataMainProvider = {
-  category: Category[];
-  course: Courses[];
-  users: Users[];
+export type IDataAdminProvider = {
+  users: IUsers[];
 };

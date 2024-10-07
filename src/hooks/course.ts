@@ -1,43 +1,63 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-import { public_api_courses } from "../constants/constants";
+import { ICategory, ICourses } from "../types/types";
 
-import { Category, Courses } from "../types/types";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { firebaseStore } from "../firebase-config";
 
+import { keyCollection } from "../constants/constants";
+
+// for category
 export const useGetCategory = () => {
-  const eventName: string = "category";
+  const [categories, setCategories] = useState<ICategory[]>();
 
-  const { data } = useQuery({
-    queryKey: [eventName],
-    queryFn: async () => {
-      const response = await fetch(`${public_api_courses}/${eventName}`);
+  useQuery({
+    queryKey: [keyCollection.categories],
+    queryFn: () => {
+      const q = query(
+        collection(firebaseStore, keyCollection.categories),
+        orderBy("category_id")
+      );
+      getDocs(q).then((querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => {
+          const item = doc.data() as ICategory;
+          item.id = doc.id;
+          return item;
+        });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      return response.json();
+        setCategories(data);
+        return data;
+      });
     },
     staleTime: Infinity,
   });
-  return { category: data as Category[] };
+  return { categories };
 };
 
+// for course
 export const useGetCourse = () => {
-  const eventName: string = "course";
+  const [courses, setCourses] = useState<ICourses[]>();
 
-  const { data } = useQuery({
-    queryKey: [eventName],
-    queryFn: async () => {
-      const response = await fetch(`${public_api_courses}/${eventName}`);
+  useQuery({
+    queryKey: [keyCollection.courses],
+    queryFn: () => {
+      const q = query(
+        collection(firebaseStore, keyCollection.courses),
+        orderBy("course_id")
+      );
+      getDocs(q).then((querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => {
+          const item = doc.data() as ICourses;
+          item.id = doc.id;
+          return item;
+        });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      return response.json();
+        setCourses(data);
+        return data;
+      });
     },
     staleTime: Infinity,
   });
-  return { course: data as Courses[] };
+  return { courses };
 };

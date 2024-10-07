@@ -3,30 +3,27 @@ import { useNavigate } from "react-router-dom";
 
 import { MainContext } from "../../../../context/main-provider";
 
-import { Courses } from "../../../../types/types";
+import { ICourses } from "../../../../types/types";
 
 const Course = () => {
     const navigate = useNavigate();
     const { data } = useContext(MainContext);
 
-    const [newList, setNewList] = useState<Courses[]>();
+    const [newList, setNewList] = useState<ICourses[]>();
 
     useEffect(() => {
         if (!data?.course) return;
         setNewList(data.course)
     }, [data?.course])
 
-    if (!data?.category) return
-    const { category, course } = data;
-
     const handleFilterByType = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const type: string = event.target.value;
         console.log("type >>>", type);
 
         if (type === "all") {
-            setNewList(course);
+            setNewList(data?.course);
         } else {
-            const listFilter = course.filter((items) => {
+            const listFilter = data?.course.filter((items) => {
                 return items.tag === type;
             });
 
@@ -55,7 +52,7 @@ const Course = () => {
                             <option value="all" selected>
                                 See All
                             </option>
-                            {category.map((items, index) => {
+                            {data?.categories.map((items, index) => {
                                 return (
                                     <>
                                         <option value={items.type} key={index}>
@@ -71,11 +68,11 @@ const Course = () => {
                     {newList?.slice(0, 6).map((items, index) => {
                         return (
                             <>
-                                <div className="col p-3" key={index} role="button" onClick={() => navigate(`/course/${items.id}`)}>
+                                <div className="col p-3" key={index} role="button" onClick={() => navigate(`/course/${items.course_id}`)}>
                                     <div className="bg-white rounded-3 p-3 shadow-lg h-100 ">
                                         <div className="card h-100 position-relative">
                                             <img
-                                                className="card-img-top img-fluid"
+                                                className="card-img-top h-100 img-fluid"
                                                 src={items.image}
                                                 alt={items.title}
                                             />

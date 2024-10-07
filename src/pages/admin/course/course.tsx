@@ -2,72 +2,99 @@ import { useContext, useEffect, useState } from "react";
 
 import { MainContext } from "../../../context/main-provider";
 
-import { Modal, Table } from "antd";
+import { message, Modal, Table } from "antd";
 
-import { Category, Courses } from "../../../types/types";
+import { ICategory, ICourses } from "../../../types/types";
 import FormAddNewCourse from "./_components/form-course";
-
-const columns = [
-    {
-        title: "Id",
-        dataIndex: "id",
-        key: "id",
-    },
-    {
-        title: "Title",
-        dataIndex: "title",
-        key: "title",
-    },
-    {
-        title: "Tag",
-        dataIndex: "tag",
-        key: "tag",
-    },
-    {
-        title: "Level",
-        dataIndex: "level",
-        key: "level",
-    },
-    {
-        title: "Price",
-        dataIndex: "price",
-        key: "price",
-    },
-    {
-        title: "Lessons",
-        dataIndex: "lessons",
-        key: "lessons",
-    },
-    {
-        title: "Action",
-        dataIndex: "",
-        key: "x",
-        render: () => (
-            <div className="text-center">
-                <button className="btn btn-primary me-3" type="button">
-                    <i className="fa-solid fa-pen-to-square"></i>
-                </button>
-                <button className="btn btn-danger" type="button">
-                    <i className="fa-solid fa-trash"></i>
-                </button>
-            </div>
-        ),
-    },
-];
+import { deleteDoc, doc } from "firebase/firestore";
+import { firebaseStore } from "../../../firebase-config";
+import { useQueryClient } from "@tanstack/react-query";
+import { keyCollection } from "../../../constants/constants";
 
 const AdminCourse = () => {
     const { data } = useContext(MainContext);
+    const queryClient = useQueryClient();
 
-    const [category, setCategory] = useState<Category[]>();
-    const [course, setCourse] = useState<Courses[]>();
+    const [category, setCategory] = useState<ICategory[]>();
+    const [course, setCourse] = useState<ICourses[]>();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [id, setId] = useState<string>("0");
 
     useEffect(() => {
-        if (!data?.category || !data.course) return;
-        setCategory(data.category);
+        if (!data?.categories || !data.course) return;
+        setCategory(data.categories);
         setCourse(data.course);
     }, [data]);
 
+    const columns = [
+        {
+            title: "Id",
+            dataIndex: "course_id",
+            key: "course_id",
+        },
+        {
+            title: "Title",
+            dataIndex: "title",
+            key: "title",
+        },
+        {
+            title: "Tag",
+            dataIndex: "tag",
+            key: "tag",
+        },
+        {
+            title: "Level",
+            dataIndex: "level",
+            key: "level",
+        },
+        {
+            title: "Price",
+            dataIndex: "price",
+            key: "price",
+        },
+        {
+            title: "Lessons",
+            dataIndex: "lessons",
+            key: "lessons",
+        },
+        {
+            title: "Action",
+            dataIndex: "",
+            key: "x",
+            render: (record: ICourses) => (
+                <div className="text-center">
+                    <button
+                        className="btn btn-primary me-3"
+                        type="button"
+                        onClick={() => {
+                            setIsModalOpen(true);
+                            setId(record.id);
+                        }}
+                    >
+                        <i className="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button
+                        className="btn btn-danger"
+                        type="button"
+                        onClick={() => handleDelele(record.id)}
+                    >
+                        <i className="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            ),
+        },
+    ];
+
+    const handleDelele = async (id: string) => {
+        await deleteDoc(doc(firebaseStore, keyCollection.courses, id));
+
+        message.success("Delete course successfully", 2);
+
+        await queryClient.invalidateQueries({
+            queryKey: [keyCollection.courses],
+            refetchType: "all",
+        });
+    };
     return (
         <section className="my-4">
             <Table
@@ -83,25 +110,36 @@ const AdminCourse = () => {
                             <div className="ms-auto">
                                 <button
                                     className="btn btn-lg btn-outline-primary"
-                                    type="button" onClick={() => setIsModalOpen(true)}
+                                    type="button"
+                                    onClick={() => {
+                                        setIsModalOpen(true)
+                                        setId("0")
+                                    }}
                                 >
-                                    <i className="fa-solid fa-plus"></i> Create New Course
+                                    <i className="fa-solid fa-plus"></i>
+                                    Create new course
                                 </button>
-                                <Modal
-                                    title={<><h2 className="fw-bold">Create New Course</h2></>}
-                                    open={isModalOpen}
-                                    footer={false}
-                                    onOk={() => setIsModalOpen(false)}
-                                    onCancel={() => setIsModalOpen(false)}
-                                    width={1000}
-                                >
-                                    <FormAddNewCourse category={category ?? []} />
-                                </Modal>
                             </div>
                         </div>
                     </>
                 )}
             />
+            <Modal
+                title={
+                    <>
+                        <h2 className="fw-bold">
+                            {id === "0" ? "Create New Course" : "Edit course"}
+                        </h2>
+                    </>
+                }
+                open={isModalOpen}
+                footer={false}
+                onOk={() => setIsModalOpen(false)}
+                onCancel={() => setIsModalOpen(false)}
+                width={1000}
+            >
+                <FormAddNewCourse category={category ?? []} id={id} />
+            </Modal>
         </section>
     );
 };

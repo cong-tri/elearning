@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { MainContext } from "../../context/main-provider";
 
 import Breadcrumb from "../../components/user/breadcrumb";
-// import Pagination from "./_components/pagination"
-import { Category, Courses } from "../../types/types";
-import { useNavigate } from "react-router-dom";
+
+import { ICourses, ICategory } from "../../types/types";
 
 type Skill = {
     level: string;
@@ -22,16 +22,16 @@ const Course = () => {
 
     const navigate = useNavigate()
 
-    const [newList, setNewList] = useState<Courses[]>();
-    const [listSearch, setListSearch] = useState<Courses[]>();
-    const [category, setCategory] = useState<Category[]>();
+    const [newList, setNewList] = useState<ICourses[]>();
+    const [listSearch, setListSearch] = useState<ICourses[]>();
+    const [categories, setCategories] = useState<ICategory[]>();
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
-        if (!data?.course || !data.category) return;
+        if (!data?.course || !data.categories) return;
         setNewList(data.course);
-        setCategory(data.category);
-    }, [data?.course, data?.category]);
+        setCategories(data.categories);
+    }, [data]);
 
     const itemsPerPage = 9;
     const listLength: number = newList?.length ?? 0;
@@ -183,7 +183,7 @@ const Course = () => {
                             <div className="col-12 col-md col-xl-12 order-last order-xl-first">
                                 <div className="border shadow-lg p-3 py-xl-4 rounded-3 mb-4 mb-xl-5">
                                     <h4 className="fw-bold my-3">Categories</h4>
-                                    {category?.map((items) => {
+                                    {categories?.map((items) => {
                                         return (
                                             <>
                                                 <button
@@ -210,14 +210,16 @@ const Course = () => {
                                             <div className="bg-white rounded-3 p-3 shadow-lg h-100 ">
                                                 <div className="card h-100 position-relative">
                                                     <img
-                                                        className="card-img-top img-fluid"
+                                                        className="card-img-top h-100 img-fluid"
                                                         src={items.image}
+                                                        width={"100%"}
+                                                        height={"100%"}
                                                         alt={items.title}
                                                     />
                                                     <div className="position-absolute top-0 start-0 bg-primary text-white text-uppercase p-1 rounded-2">
                                                         <span className="fs-6">{items.tag}</span>
                                                     </div>
-                                                    <div className="card-header h-100 align-content-center">
+                                                    <div className="card-header align-content-center">
                                                         <h5 className="fw-bold">{items.title}</h5>
                                                     </div>
                                                     <div className="card-body">
@@ -287,19 +289,19 @@ const Course = () => {
 
 export default Course;
 
-const sortTitleAscending = ({ array }: { array: Courses[] }): Courses[] => {
+const sortTitleAscending = ({ array }: { array: ICourses[] }): ICourses[] => {
     return array.sort((a, b) => a.title.localeCompare(b.title));
 };
 
-const sortTitleDescending = ({ array }: { array: Courses[] }): Courses[] => {
+const sortTitleDescending = ({ array }: { array: ICourses[] }): ICourses[] => {
     return array.sort((a, b) => b.title.localeCompare(a.title));
 };
 
-const sortPriceAscending = ({ array }: { array: Courses[] }) => {
+const sortPriceAscending = ({ array }: { array: ICourses[] }) => {
     return array.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
 };
 
-const sortPriceDescending = ({ array }: { array: Courses[] }) => {
+const sortPriceDescending = ({ array }: { array: ICourses[] }) => {
     return array.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
 };
 
@@ -307,7 +309,7 @@ const filterByTitle = ({
     array,
     title,
 }: {
-    array: Courses[];
+    array: ICourses[];
     title: string;
 }) => {
     return array.filter((course) =>

@@ -1,20 +1,34 @@
 import { useQuery } from "@tanstack/react-query";
-import { Users } from "../types/types";
-import { public_api_users } from "../constants/constants";
+import { useState } from "react";
+
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { firebaseStore } from "../firebase-config";
+
+import { keyCollection } from "../constants/constants";
+import { IUsers } from "../types/types";
 
 export const useGetUser = () => {
-  const { data } = useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      const response = await fetch(public_api_users);
+  const [users, setUsers] = useState<IUsers[]>();
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+  useQuery({
+    queryKey: [keyCollection.users],
+    queryFn: () => {
+      const q = query(
+        collection(firebaseStore, keyCollection.users),
+        orderBy("user_id")
+      );
+      getDocs(q).then((querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => {
+          const item = doc.data() as IUsers;
+          item.id = doc.id;
+          return item;
+        });
 
-      return response.json();
+        setUsers(data);
+        return data;
+      });
     },
     staleTime: Infinity,
   });
-  return { users: data as Users[] };
+  return { users };
 };

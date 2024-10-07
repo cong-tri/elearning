@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { setCookie } from "typescript-cookie";
+import { message } from "antd";
+import Input from "../../../components/input";
 
 type Login = {
     username: string;
@@ -16,7 +18,7 @@ const Login = () => {
         password: "123456",
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
@@ -26,6 +28,7 @@ const Login = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        console.log(formData);
 
         const auth = getAuth();
         const response = await signInWithEmailAndPassword(
@@ -43,7 +46,9 @@ const Login = () => {
                     sameSite: "strict",
                     expires: 3600
                 });
-            navigate("/admin/home");
+            message.success("Login successfully", 2, () => navigate("/admin/home"))
+        } else {
+            message.error("Login unsuccessfully", 2, () => navigate("/authen"))
         }
     };
 

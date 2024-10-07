@@ -13,8 +13,9 @@ type InputField = {
     rows?: number;
     maxlength?: number;
     readonly?: boolean;
-    value?: string | number
-    autofocus?: boolean
+    value?: string | number;
+    autofocus?: boolean;
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 };
 
 const Input = ({
@@ -33,7 +34,8 @@ const Input = ({
     maxlength,
     readonly,
     value,
-    autofocus
+    autofocus,
+    onChange
 }: InputField) => {
     return (
         <>
@@ -47,6 +49,7 @@ const Input = ({
                         maxLength={maxlength}
                         placeholder={placeholder}
                         value={value}
+                        onChange={onChange}
                     >
                     </textarea>
                 ) : (
@@ -59,6 +62,7 @@ const Input = ({
                         placeholder={placeholder}
                         readOnly={readonly}
                         value={value}
+                        onChange={onChange}
                         autoFocus={autofocus}
                     />
                 )}
