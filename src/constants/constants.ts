@@ -3,4 +3,5 @@ export const keyCollection = {
   categories: "categories",
   courses: "courses",
   users: "users",
+  blogs: "blogs",
 };

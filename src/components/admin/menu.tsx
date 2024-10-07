@@ -44,6 +44,11 @@ const items: MenuProps["items"] = [
                 label: "Category"
             },
             {
+                icon: <UnorderedListOutlined />,
+                key: "blog",
+                label: "Blog",
+            },
+            {
                 icon: <QuestionCircleOutlined />,
                 key: "quiz",
                 label: "Quiz Attempts"
@@ -98,6 +103,9 @@ const MenuNav = () => {
                 break;
             case "quiz":
                 navigate("/admin/quiz")
+                break;
+            case "blog":
+                navigate("/admin/blog");
                 break;
             case "update":
                 navigate("/admin/update")

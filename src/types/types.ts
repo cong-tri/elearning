@@ -21,6 +21,20 @@ export interface ICourses {
   course_id: string;
 }
 
+export interface IBlogs {
+  blog_id: string;
+  id: string;
+  content_1: string;
+  content_2: string;
+  content_3: string;
+  created_at: Date | string;
+  created_by: string;
+  date: string;
+  label_1: string;
+  label_2: string;
+  title: string;
+}
+
 export interface IUsers {
   address: string;
   user_id: string;
@@ -42,6 +56,7 @@ export interface IUsers {
 export type IDataMainProvider = {
   categories: ICategory[];
   course: ICourses[];
+  blogs: IBlogs[];
 };
 
 export type IDataAdminProvider = {

@@ -74,10 +74,9 @@ const FormAddNewCourse = ({ category, id }: { category: ICategory[]; id: string 
             return
         }
 
-        data.course_id = userId
-        console.log(data);
-
         if (cour_id === "") {
+            console.log(data);
+            data.course_id = userId
             await addDoc(collection(firebaseStore, keyCollection.courses), data);
             message.success("Create new course successfully", 2);
 
@@ -85,6 +84,7 @@ const FormAddNewCourse = ({ category, id }: { category: ICategory[]; id: string 
                 queryKey: [keyCollection.courses],
                 refetchType: "all",
             });
+            setFormData(defaultValue)
         } else {
             await setDoc(doc(firebaseStore, keyCollection.courses, cour_id), data);
             message.success("Update course successfully", 2);
@@ -93,6 +93,7 @@ const FormAddNewCourse = ({ category, id }: { category: ICategory[]; id: string 
                 queryKey: [keyCollection.courses],
                 refetchType: "all"
             })
+            setFormData(defaultValue)
         }
     };
 

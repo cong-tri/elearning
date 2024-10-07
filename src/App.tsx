@@ -30,6 +30,7 @@ import AdminCategory from "./pages/admin/category/category";
 import AdminUser from "./pages/admin/users/users";
 import AdminProfile from "./pages/admin/profile/profile";
 import AdminUpdateProfile from "./pages/admin/update-profile/update-profile";
+import AdminBlog from "./pages/admin/blog/blog";
 
 const App: React.FC = () => {
   return (
@@ -60,6 +61,7 @@ const App: React.FC = () => {
             <Route path="/admin/user" element={<AdminUser />} />
             <Route path="/admin/category" element={<AdminCategory />} />
             <Route path="/admin/quiz" element={<AdminQuiz />} />
+            <Route path="/admin/blog" element={<AdminBlog />} />
             <Route path="/admin/update" element={<AdminUpdateProfile />} />
           </Route>
         </Routes>
