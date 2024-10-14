@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { collection, doc, getFirestore, writeBatch } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 // import { keyCollection, listCourses } from "./constants/constants";
 
 const firebaseConfig = {

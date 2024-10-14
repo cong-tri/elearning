@@ -1,10 +1,9 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Input from "../../../../components/input";
 
-import { IBlogs } from "../../../../types/types";
+import { IEvents } from "../../../../types/types";
 
 import moment from "moment";
 
@@ -15,24 +14,22 @@ import { message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { keyCollection } from "../../../../constants/constants";
 
-const defaultValue: IBlogs = {
+const defaultValue: IEvents = {
     id: "",
     title: "",
     content_1: "",
     content_2: "",
-    content_3: "",
     label_1: "",
     label_2: "",
     created_at: moment().format(),
-    created_by: "Dao Cong Tri",
+    created_by: "Ngo Quoc Linh",
     date: "",
 };
 
-const FormBlog = ({ id }: { id: string }) => {
-    const navigate = useNavigate();
+const FormEvent = ({ id }: { id: string }) => {
     const queryClient = useQueryClient();
 
-    const [formData, setFormData] = useState<IBlogs>(defaultValue);
+    const [formData, setFormData] = useState<IEvents>(defaultValue);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -56,26 +53,26 @@ const FormBlog = ({ id }: { id: string }) => {
             return;
         }
 
-        const { id: blo_id, ...data } = formData;
+        const { id: eve_id, ...data } = formData;
 
-        if (blo_id === "") {
-            await addDoc(collection(firebaseStore, keyCollection.blogs), data);
+        if (eve_id === "") {
+            await addDoc(collection(firebaseStore, keyCollection.events), data);
 
-            message.success("Create new blog successfully", 2);
+            message.success("Create new event successfully", 2);
 
             await queryClient.invalidateQueries({
-                queryKey: [keyCollection.blogs],
+                queryKey: [keyCollection.events],
                 refetchType: "all",
             });
 
             setFormData(defaultValue);
         } else {
-            await setDoc(doc(firebaseStore, keyCollection.blogs, blo_id), data);
+            await setDoc(doc(firebaseStore, keyCollection.events, eve_id), data);
 
-            message.success("Update blog successfully", 2);
+            message.success("Update event successfully", 2);
 
             await queryClient.invalidateQueries({
-                queryKey: [keyCollection.blogs],
+                queryKey: [keyCollection.events],
                 refetchType: "all",
             });
 
@@ -85,18 +82,19 @@ const FormBlog = ({ id }: { id: string }) => {
 
     useEffect(() => {
         if (id !== "0") {
-            getDoc(doc(collection(firebaseStore, keyCollection.blogs), id)).then(
+            getDoc(doc(collection(firebaseStore, keyCollection.events), id)).then(
                 (snapshot) => {
                     if (snapshot.exists()) {
-                        const data = snapshot.data() as IBlogs;
+                        const data = snapshot.data() as IEvents;
                         data.id = snapshot.id;
                         console.log(data);
+
                         setFormData(data);
                     } else setFormData(defaultValue);
                 }
             );
         }
-    }, [id, navigate]);
+    }, [id]);
 
     return (
         <>
@@ -115,6 +113,19 @@ const FormBlog = ({ id }: { id: string }) => {
                                     maxlength={100}
                                     autofocus={true}
                                     value={formData.title}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className="col">
+                                <Input
+                                    id="date"
+                                    name="date"
+                                    label="Date"
+                                    classnameDiv="form-floating mb-4"
+                                    classnameInput="form-control form-control-lg"
+                                    type="text"
+                                    maxlength={100}
+                                    value={formData.date}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -146,58 +157,6 @@ const FormBlog = ({ id }: { id: string }) => {
                             </div>
                             <div className="col">
                                 <Input
-                                    id="content_1"
-                                    name="content_1"
-                                    label="Content 1"
-                                    classnameDiv="form-floating mb-4"
-                                    classnameInput="form-control form-control-lg h-100"
-                                    rows={4}
-                                    maxlength={250}
-                                    value={formData.content_1}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="col">
-                                <Input
-                                    id="content_2"
-                                    name="content_2"
-                                    label="Content 2"
-                                    classnameDiv="form-floating mb-4"
-                                    classnameInput="form-control form-control-lg h-100"
-                                    rows={4}
-                                    maxlength={250}
-                                    value={formData.content_2}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="col">
-                                <Input
-                                    id="content_3"
-                                    name="content_3"
-                                    label="Content 3"
-                                    classnameDiv="form-floating mb-4"
-                                    classnameInput="form-control form-control-lg h-100"
-                                    rows={4}
-                                    maxlength={250}
-                                    value={formData.content_3}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="col">
-                                <Input
-                                    id="date"
-                                    name="date"
-                                    label="Date"
-                                    classnameDiv="form-floating mb-4"
-                                    classnameInput="form-control form-control-lg"
-                                    type="text"
-                                    maxlength={100}
-                                    value={formData.date}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="col">
-                                <Input
                                     id="created_by"
                                     name="created_by"
                                     label="Create By"
@@ -222,10 +181,36 @@ const FormBlog = ({ id }: { id: string }) => {
                                     readonly={true}
                                 />
                             </div>
+                            <div className="col">
+                                <Input
+                                    id="content_1"
+                                    name="content_1"
+                                    label="Content 1"
+                                    classnameDiv="form-floating mb-4"
+                                    classnameInput="form-control form-control-lg h-100"
+                                    rows={4}
+                                    maxlength={250}
+                                    value={formData.content_1}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className="col">
+                                <Input
+                                    id="content_2"
+                                    name="content_2"
+                                    label="Content 2"
+                                    classnameDiv="form-floating mb-4"
+                                    classnameInput="form-control form-control-lg h-100"
+                                    rows={4}
+                                    maxlength={250}
+                                    value={formData.content_2}
+                                    onChange={handleChange}
+                                />
+                            </div>
                         </div>
                         <div>
                             <button className="btn btn-primary btn-lg w-100" type="submit">
-                                {id === "0" ? "Create New Blog" : "Update blog"}
+                                {id === "0" ? "Create New Event" : "Update event"}
                             </button>
                         </div>
                     </form>
@@ -235,20 +220,16 @@ const FormBlog = ({ id }: { id: string }) => {
     );
 };
 
-export default FormBlog;
+export default FormEvent;
 
-const validateFormData = (data: IBlogs) => {
+const validateFormData = (data: IEvents) => {
     const errors: { [key: string]: string } = {};
 
     if (!data.title.trim()) {
         errors.title = "Title is required";
     }
 
-    if (
-        !data.content_1.trim() ||
-        !data.content_2.trim() ||
-        !data.content_3.trim()
-    ) {
+    if (!data.content_1.trim() || !data.content_2.trim()) {
         errors.content = "Contents is required";
     }
 

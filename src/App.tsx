@@ -21,6 +21,7 @@ import About from "./pages/about/about";
 import ZoomPage from "./pages/zoom/zoom";
 import ZoomDetail from "./pages/zoom-detail/zoom-detail";
 import Checkout from "./pages/checkout/checkout";
+import ProtectedRoute from "./pages/protected/protected";
 
 {/** pages for admin */ }
 import AdminHome from "./pages/admin/home/home";
@@ -31,6 +32,8 @@ import AdminUser from "./pages/admin/users/users";
 import AdminProfile from "./pages/admin/profile/profile";
 import AdminUpdateProfile from "./pages/admin/update-profile/update-profile";
 import AdminBlog from "./pages/admin/blog/blog";
+import AdminEvent from "./pages/admin/event/event";
+import AdminZoom from "./pages/admin/zoom/zoom";
 
 const App: React.FC = () => {
   return (
@@ -54,7 +57,11 @@ const App: React.FC = () => {
             <Route path="authen" element={<Authen />} />
           </Route>
           {/** For admin */}
-          <Route element={<AdminLayout />}>
+          <Route element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }>
             <Route path="/admin/home" element={<AdminHome />} />
             <Route path="/admin/course" element={<AdminCourse />} />
             <Route path="/admin/profile" element={<AdminProfile />} />
@@ -62,6 +69,8 @@ const App: React.FC = () => {
             <Route path="/admin/category" element={<AdminCategory />} />
             <Route path="/admin/quiz" element={<AdminQuiz />} />
             <Route path="/admin/blog" element={<AdminBlog />} />
+            <Route path="/admin/event" element={<AdminEvent />} />
+            <Route path="/admin/zoom" element={<AdminZoom />} />
             <Route path="/admin/update" element={<AdminUpdateProfile />} />
           </Route>
         </Routes>

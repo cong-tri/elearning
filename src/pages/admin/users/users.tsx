@@ -2,33 +2,30 @@ import { useContext, useEffect, useState } from "react";
 
 import { AdminContext } from "../../../context/admin-provider";
 
-import { Modal, Table } from "antd";
+import { message, Modal, Table } from "antd";
 
 import FormAddNewUser from "./_components/form-user";
 
 import { IUsers } from "../../../types/types";
-
-
+import { deleteDoc, doc } from "firebase/firestore";
+import { firebaseStore } from "../../../firebase-config";
+import { keyCollection } from "../../../constants/constants";
+import { useQueryClient } from "@tanstack/react-query";
 
 const AdminUser = () => {
     const { data } = useContext(AdminContext);
+    const queryClient = useQueryClient();
 
     const [users, setUsers] = useState<IUsers[]>();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [id, setId] = useState<string>("0");
 
     useEffect(() => {
         if (!data?.users) return;
         setUsers(data.users);
-        console.log(data.users);
-
     }, [data]);
 
     const columns = [
-        {
-            title: "Id",
-            dataIndex: "user_id",
-            key: "user_id",
-        },
         {
             title: "Code",
             dataIndex: "code",
@@ -53,18 +50,39 @@ const AdminUser = () => {
             title: "Action",
             dataIndex: "",
             key: "x",
-            render: () => (
+            render: (record: IUsers) => (
                 <div className="text-center">
-                    <button className="btn btn-primary me-3" type="button">
+                    <button
+                        className="btn btn-primary me-3"
+                        type="button"
+                        onClick={() => {
+                            setIsModalOpen(true);
+                            setId(record.id);
+                        }}
+                    >
                         <i className="fa-solid fa-pen-to-square"></i>
                     </button>
-                    <button className="btn btn-danger" type="button">
+                    <button
+                        className="btn btn-danger"
+                        type="button"
+                        onClick={() => handleDelele(record.id)}
+                    >
                         <i className="fa-solid fa-trash"></i>
                     </button>
                 </div>
             ),
         },
     ];
+    const handleDelele = async (id: string) => {
+        await deleteDoc(doc(firebaseStore, keyCollection.users, id));
+
+        message.success("Delete user successfully", 2);
+
+        await queryClient.invalidateQueries({
+            queryKey: [keyCollection.users],
+            refetchType: "all",
+        });
+    };
     return (
         <>
             <Table
@@ -97,7 +115,7 @@ const AdminUser = () => {
                                     onCancel={() => setIsModalOpen(false)}
                                     width={1200}
                                 >
-                                    <FormAddNewUser />
+                                    <FormAddNewUser id={id} />
                                 </Modal>
                             </div>
                         </div>
@@ -105,15 +123,26 @@ const AdminUser = () => {
                 )}
                 expandRowByClick
                 expandable={{
-                    expandedRowRender: (record) => <>
-                        <div>
-                            <p>Firstname: <span className="ms-4">{record.name.firstname}</span></p>
-                            <p>Lastname: <span className="ms-4">{record.name.lastname}</span></p>
-                            <p>Phone: <span className="ms-4">{record.phone}</span></p>
-                            <p>Address: <span className="ms-4">{record.address}</span></p>
-                        </div>
-                    </>,
-                    rowExpandable: (record) => record.username !== 'Not Expandable',
+                    expandedRowRender: (record) => (
+                        <>
+                            <div>
+                                <p>
+                                    Firstname:{" "}
+                                    <span className="ms-4">{record.name.firstname}</span>
+                                </p>
+                                <p>
+                                    Lastname: <span className="ms-4">{record.name.lastname}</span>
+                                </p>
+                                <p>
+                                    Phone: <span className="ms-4">{record.phone}</span>
+                                </p>
+                                <p>
+                                    Address: <span className="ms-4">{record.address}</span>
+                                </p>
+                            </div>
+                        </>
+                    ),
+                    rowExpandable: (record) => record.username !== "Not Expandable",
                 }}
             />
         </>

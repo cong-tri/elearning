@@ -20,7 +20,6 @@ export interface ICourses {
 }
 
 export interface IBlogs {
-  blog_id: string;
   id: string;
   content_1: string;
   content_2: string;
@@ -33,6 +32,30 @@ export interface IBlogs {
   title: string;
 }
 
+export interface IEvents {
+  id: string;
+  content_1: string;
+  content_2: string;
+  created_at: Date | string;
+  created_by: string;
+  date: string;
+  label_1: string;
+  label_2: string;
+  title: string;
+}
+
+export interface IZooms {
+  meet_id: string;
+  id: string;
+  hours: string;
+  host_by: string;
+  created_at: Date | string;
+  created_by: string;
+  date: string;
+  start_time: string;
+  title: string;
+}
+
 export interface IUsers {
   address: string;
   user_id: string;
@@ -40,7 +63,6 @@ export interface IUsers {
   id: string;
   email: string;
   username: string;
-  password: string;
   name: {
     firstname: string;
     lastname: string;
@@ -51,10 +73,26 @@ export interface IUsers {
   role: "admin" | "user";
 }
 
+export interface IQuizs {
+  id: string;
+  attemps: number;
+  created_at: Date | string;
+  created_by: string;
+  start_time: string;
+  end_time: string;
+  host_by: string;
+  questions: number;
+  type: string;
+  title: string;
+}
+
 export type IDataMainProvider = {
   categories: ICategory[];
   course: ICourses[];
   blogs: IBlogs[];
+  events: IEvents[];
+  zooms: IZooms[];
+  quizs: IQuizs[];
 };
 
 export type IDataAdminProvider = {

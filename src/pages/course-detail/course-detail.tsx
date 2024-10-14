@@ -76,7 +76,7 @@ const CourseDetail = () => {
                                                     <p className="text-secondary">Instructor:</p>
                                                 </div>
                                                 <div className="ms-auto text-right">
-                                                    <p className="fw-medium">{detail?.createBy}</p>
+                                                    <p className="fw-medium">{detail?.created_by}</p>
                                                 </div>
                                             </div>
                                             <div className="hstack gap-3 mb-3">
@@ -235,7 +235,7 @@ const CourseDetail = () => {
                                     </p>
                                 </div>
                                 <div className="ms-auto text-right">
-                                    <p>{detail?.createBy}</p>
+                                    <p>{detail?.created_by}</p>
                                 </div>
                             </div>
                             <div className="hstack gap-3 text-secondary py-3 border-bottom">
@@ -245,7 +245,7 @@ const CourseDetail = () => {
                                     </p>
                                 </div>
                                 <div className="ms-auto text-right">
-                                    <p>{moment(detail?.createAt).format("MMM Do YY")}</p>
+                                    <p>{moment(detail?.created_at).format("MMM Do YY")}</p>
                                 </div>
                             </div>
                             <div className="hstack gap-3 text-secondary py-3 border-bottom">

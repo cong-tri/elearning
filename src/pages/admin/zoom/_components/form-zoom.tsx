@@ -1,10 +1,7 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Input from "../../../../components/input";
-
-import { IBlogs } from "../../../../types/types";
 
 import moment from "moment";
 
@@ -14,25 +11,25 @@ import { firebaseStore } from "../../../../firebase-config";
 import { message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { keyCollection } from "../../../../constants/constants";
+import { IZooms } from "../../../../types/types";
 
-const defaultValue: IBlogs = {
+const defaultValue: IZooms = {
     id: "",
+    meet_id: "",
+    start_time: "",
+    hours: "",
+    host_by: "",
     title: "",
-    content_1: "",
-    content_2: "",
-    content_3: "",
-    label_1: "",
-    label_2: "",
     created_at: moment().format(),
-    created_by: "Dao Cong Tri",
+    created_by: "Hoang Kim Ngoc",
     date: "",
 };
 
-const FormBlog = ({ id }: { id: string }) => {
+const FormZoom = ({ id }: { id: string }) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const [formData, setFormData] = useState<IBlogs>(defaultValue);
+    const [formData, setFormData] = useState<IZooms>(defaultValue);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -56,26 +53,26 @@ const FormBlog = ({ id }: { id: string }) => {
             return;
         }
 
-        const { id: blo_id, ...data } = formData;
+        const { id: zoom_id, ...data } = formData;
 
-        if (blo_id === "") {
-            await addDoc(collection(firebaseStore, keyCollection.blogs), data);
+        if (zoom_id === "") {
+            await addDoc(collection(firebaseStore, keyCollection.zoom), data);
 
-            message.success("Create new blog successfully", 2);
+            message.success("Create new zoom successfully", 2);
 
             await queryClient.invalidateQueries({
-                queryKey: [keyCollection.blogs],
+                queryKey: [keyCollection.zoom],
                 refetchType: "all",
             });
 
             setFormData(defaultValue);
         } else {
-            await setDoc(doc(firebaseStore, keyCollection.blogs, blo_id), data);
+            await setDoc(doc(firebaseStore, keyCollection.zoom, zoom_id), data);
 
-            message.success("Update blog successfully", 2);
+            message.success("Update zoom successfully", 2);
 
             await queryClient.invalidateQueries({
-                queryKey: [keyCollection.blogs],
+                queryKey: [keyCollection.zoom],
                 refetchType: "all",
             });
 
@@ -85,10 +82,10 @@ const FormBlog = ({ id }: { id: string }) => {
 
     useEffect(() => {
         if (id !== "0") {
-            getDoc(doc(collection(firebaseStore, keyCollection.blogs), id)).then(
+            getDoc(doc(collection(firebaseStore, keyCollection.zoom), id)).then(
                 (snapshot) => {
                     if (snapshot.exists()) {
-                        const data = snapshot.data() as IBlogs;
+                        const data = snapshot.data() as IZooms;
                         data.id = snapshot.id;
                         console.log(data);
                         setFormData(data);
@@ -120,66 +117,29 @@ const FormBlog = ({ id }: { id: string }) => {
                             </div>
                             <div className="col">
                                 <Input
-                                    id="label_1"
-                                    label="Label 1"
-                                    name="label_1"
+                                    id="meet_id"
+                                    label="Meet ID"
+                                    name="meet_id"
                                     classnameDiv="form-floating mb-4"
                                     classnameInput="form-control form-control-lg"
                                     type="text"
                                     maxlength={100}
-                                    value={formData.label_1}
+                                    autofocus={true}
+                                    value={formData.meet_id}
                                     onChange={handleChange}
                                 />
                             </div>
                             <div className="col">
                                 <Input
-                                    id="label_2"
-                                    label="Label 2"
-                                    name="label_2"
+                                    id="start_time"
+                                    label="Start Time"
+                                    name="start_time"
                                     classnameDiv="form-floating mb-4"
                                     classnameInput="form-control form-control-lg"
-                                    type="text"
+                                    type="time"
                                     maxlength={100}
-                                    value={formData.label_2}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="col">
-                                <Input
-                                    id="content_1"
-                                    name="content_1"
-                                    label="Content 1"
-                                    classnameDiv="form-floating mb-4"
-                                    classnameInput="form-control form-control-lg h-100"
-                                    rows={4}
-                                    maxlength={250}
-                                    value={formData.content_1}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="col">
-                                <Input
-                                    id="content_2"
-                                    name="content_2"
-                                    label="Content 2"
-                                    classnameDiv="form-floating mb-4"
-                                    classnameInput="form-control form-control-lg h-100"
-                                    rows={4}
-                                    maxlength={250}
-                                    value={formData.content_2}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="col">
-                                <Input
-                                    id="content_3"
-                                    name="content_3"
-                                    label="Content 3"
-                                    classnameDiv="form-floating mb-4"
-                                    classnameInput="form-control form-control-lg h-100"
-                                    rows={4}
-                                    maxlength={250}
-                                    value={formData.content_3}
+                                    autofocus={true}
+                                    value={formData.start_time}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -193,6 +153,32 @@ const FormBlog = ({ id }: { id: string }) => {
                                     type="text"
                                     maxlength={100}
                                     value={formData.date}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className="col">
+                                <Input
+                                    id="host_by"
+                                    name="host_by"
+                                    label="Host By"
+                                    classnameDiv="form-floating mb-4"
+                                    classnameInput="form-control form-control-lg"
+                                    type="text"
+                                    maxlength={250}
+                                    value={formData.host_by}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className="col">
+                                <Input
+                                    id="hours"
+                                    name="hours"
+                                    label="Hours"
+                                    classnameDiv="form-floating mb-4"
+                                    classnameInput="form-control form-control-lg"
+                                    type="text"
+                                    maxlength={250}
+                                    value={formData.hours}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -225,7 +211,7 @@ const FormBlog = ({ id }: { id: string }) => {
                         </div>
                         <div>
                             <button className="btn btn-primary btn-lg w-100" type="submit">
-                                {id === "0" ? "Create New Blog" : "Update blog"}
+                                {id === "0" ? "Create New Zoom" : "Update zoom"}
                             </button>
                         </div>
                     </form>
@@ -235,25 +221,33 @@ const FormBlog = ({ id }: { id: string }) => {
     );
 };
 
-export default FormBlog;
+export default FormZoom;
 
-const validateFormData = (data: IBlogs) => {
+const validateFormData = (data: IZooms) => {
     const errors: { [key: string]: string } = {};
 
     if (!data.title.trim()) {
         errors.title = "Title is required";
     }
 
-    if (
-        !data.content_1.trim() ||
-        !data.content_2.trim() ||
-        !data.content_3.trim()
-    ) {
-        errors.content = "Contents is required";
+    if (!data.meet_id.trim()) {
+        errors.meet_id = "Meet ID is required";
     }
 
-    if (!data.label_1.trim() || !data.label_2.trim()) {
-        errors.content = "Labels is required";
+    if (!data.hours.trim()) {
+        errors.hours = "Hours is required";
+    }
+
+    if (!data.host_by.trim()) {
+        errors.host_by = "Host by is required";
+    }
+
+    if (!data.start_time.trim()) {
+        errors.start_time = "Start time is required";
+    }
+
+    if (!data.date.trim()) {
+        errors.date = "Date is required";
     }
 
     return errors;

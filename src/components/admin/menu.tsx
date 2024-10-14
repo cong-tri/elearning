@@ -49,6 +49,16 @@ const items: MenuProps["items"] = [
                 label: "Blog",
             },
             {
+                icon: <UnorderedListOutlined />,
+                key: "event",
+                label: "Event",
+            },
+            {
+                icon: <UnorderedListOutlined />,
+                key: "zoom",
+                label: "Zoom",
+            },
+            {
                 icon: <QuestionCircleOutlined />,
                 key: "quiz",
                 label: "Quiz Attempts"
@@ -85,34 +95,9 @@ const MenuNav = () => {
     const onClick: MenuProps["onClick"] = (e) => {
         setCurrentPath(e.key)
 
-        switch (e.key) {
-            case "home":
-                navigate("/admin/home")
-                break;
-            case "profile":
-                navigate("/admin/profile")
-                break;
-            case "course":
-                navigate("/admin/course")
-                break;
-            case "category":
-                navigate("/admin/category")
-                break;
-            case "user":
-                navigate("/admin/user");
-                break;
-            case "quiz":
-                navigate("/admin/quiz")
-                break;
-            case "blog":
-                navigate("/admin/blog");
-                break;
-            case "update":
-                navigate("/admin/update")
-                break;
-            default:
-                break;
-        }
+        if (e.key !== "logout") navigate(`/admin/${e.key}`)
+        else console.log(e.key);
+
     };
 
     return (

@@ -4,8 +4,9 @@ import { useState } from "react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { firebaseStore } from "../firebase-config";
 
-import { keyCollection } from "../constants/constants";
+import { keyCollection, keyInfo } from "../constants/constants";
 import { IUsers } from "../types/types";
+import { getCookie } from "typescript-cookie";
 
 export const useGetUser = () => {
   const [users, setUsers] = useState<IUsers[]>();
@@ -30,5 +31,9 @@ export const useGetUser = () => {
     },
     staleTime: Infinity,
   });
+
+  // const userInfo = JSON.parse(getCookie(keyInfo) ?? "");
+  // console.log(userInfo);
+
   return { users };
 };

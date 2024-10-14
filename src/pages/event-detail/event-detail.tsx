@@ -1,6 +1,24 @@
+import { useParams } from "react-router-dom";
 import Breadcrumb from "../../components/user/breadcrumb";
+import { useContext, useEffect, useState } from "react";
+import { MainContext } from "../../context/main-provider";
+import { IEvents } from "../../types/types";
 
 const EventDetail = () => {
+    const { id } = useParams<{ id: string }>();
+
+    const { data } = useContext(MainContext);
+    const [detail, setDetail] = useState<IEvents>();
+
+    useEffect(() => {
+        if (!data?.events) return;
+
+        const detail = data.events.filter((items) => {
+            return items.id === id;
+        });
+
+        setDetail(detail[0]);
+    }, [data, id]);
     return (
         <>
             <Breadcrumb data={{ label: "Event Detail", path: "Event Detail" }} />
@@ -10,7 +28,7 @@ const EventDetail = () => {
                         <div className="mb-3">
                             <span className="badge bg-danger">Mechanical</span>
                             <h2 className="fw-bold mt-2">
-                                Become a product manager learn the Skills &amp; job.
+                                {detail?.title}
                             </h2>
                             <div className="d-flex align-items-center mt-3">
                                 <img
@@ -22,11 +40,11 @@ const EventDetail = () => {
                                 />
                                 <div className="me-4">
                                     <span className="text-muted">Teacher:</span>
-                                    <strong>Elton Muskad</strong>
+                                    <strong>{detail?.created_by}</strong>
                                 </div>
                                 <div className="me-4">
                                     <span className="text-muted">Last Update:</span>
-                                    <strong>July 24, 2024</strong>
+                                    <strong>{detail?.date}</strong>
                                 </div>
                                 <div>
                                     <span className="text-muted">Location:</span>
@@ -39,23 +57,10 @@ const EventDetail = () => {
                                 className="img-fluid mt-3"
                             />
                             <div className="mt-4">
-                                <h3>Description</h3>
-                                <p>
-                                    He legged it up the kyver have it mush super old mucker cheeky
-                                    naff that are you taking the piss, blow off ruddy the pub bite
-                                    your arm off the wireless boot cor blimey guvnor happy days
-                                    bender what a load of rubbish, say cheers pardon me horse
-                                    plays spiffing Why barf owt gob bubble and squeak. Cheers
-                                    Richard bugger show off show Que pick your nose and blow off
-                                    get stuffed mate chancer in my flat loo, bevvy amongst
-                                    hunky-dory bender bubble and squeak cod old mucker vagabond,
-                                    barmy spend a penny chimney pot young delinquent bum bag the
-                                    nancy arm knees chap, gosh nice one knees up the wireless
-                                    Charles such a fibber. Mush barmy Blending Jeffrey pardon nose
-                                    barmy cob the cup of tea bubble and squeak bugger all mate
-                                    say, I bloke mate boy tickety-boo give us the duff bugger
-                                    lurgy wind up I don't want no agro.
-                                </p>
+                                <h3>{detail?.label_1}</h3>
+                                <p>{detail?.content_1}</p>
+                                <h3>{detail?.label_2}</h3>
+                                <p>{detail?.content_2}</p>
                                 <h3>This event will allow participants to:</h3>
                                 <ul className="list-unstyled">
                                     <li>

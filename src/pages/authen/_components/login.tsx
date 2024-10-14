@@ -3,49 +3,67 @@ import { useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { setCookie } from "typescript-cookie";
 import { message } from "antd";
-import Input from "../../../components/input";
+import { keyInfo, keyToken } from "../../../constants/constants";
 
 type Login = {
-    username: string;
+    email: string;
     password: string;
 };
 
+const defaultValue: Login = {
+    email: "daocongtri20031609@gmail.com",
+    password: "123456",
+}
 const Login = () => {
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState<Login>({
-        username: "daocongtri20031609@gmail.com",
-        password: "123456",
-    });
+    const [formData, setFormData] = useState<Login>(defaultValue);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.currentTarget.name]: e.currentTarget.value });
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(formData);
 
         const auth = getAuth();
         const response = await signInWithEmailAndPassword(
             auth,
-            formData.username,
+            formData.email,
             formData.password
         );
-        console.log(response);
 
         if (response.user) {
-            if (typeof window !== "undefined")
-                setCookie("userInfo", JSON.stringify(response.user), {
+            setFormData(defaultValue)
+
+            const user = response.user;
+
+            const token: string = await user.getIdToken()
+
+            const userInfo = {
+                email: user.email,
+                uid: user.uid
+            }
+
+            if (typeof window !== "undefined") {
+                setCookie(keyToken, token, {
                     path: "/",
                     secure: false,
                     sameSite: "strict",
-                    expires: 3600
+                    expires: 60 * 60 * 24
                 });
+
+                setCookie(keyInfo, JSON.stringify(userInfo), {
+                    path: "/",
+                    secure: false,
+                    sameSite: "strict",
+                    expires: 60 * 60 * 24
+                });
+            } else {
+                console.log("Yout window don't support");
+                return
+            }
+
             message.success("Login successfully", 2, () => navigate("/admin/home"))
         } else {
             message.error("Login unsuccessfully", 2, () => navigate("/authen"))
@@ -61,18 +79,18 @@ const Login = () => {
             </p>
             <form action="" onSubmit={handleSubmit} className="mt-xl-4">
                 <div className="mb-3 mb-xl-4">
-                    <label htmlFor="username" className="form-label fs-4">
-                        Username or Email
+                    <label htmlFor="email" className="form-label fs-4">
+                        Email
                     </label>
                     <input
-                        type="text"
+                        type="email"
                         className="form-control form-control-lg"
-                        name="username"
-                        id="username"
+                        name="email"
+                        id="email"
                         aria-describedby="helpId"
                         onChange={handleChange}
-                        value={formData.username}
-                        placeholder={"Your username or email"}
+                        value={formData.email}
+                        placeholder={"Your email"}
                     />
                 </div>
                 <div className="mb-3 mb-xl-4">

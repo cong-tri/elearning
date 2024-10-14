@@ -1,32 +1,32 @@
 import { useState } from "react";
-import { IBlogs } from "../types/types";
+import { IEvents } from "../types/types";
 import { useQuery } from "@tanstack/react-query";
 import { keyCollection } from "../constants/constants";
 import { firebaseStore } from "../firebase-config";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 
-export const useGetBlog = () => {
-  const [blogs, setBlogs] = useState<IBlogs[]>();
+export const useGetEvent = () => {
+  const [events, setEvents] = useState<IEvents[]>();
 
   useQuery({
-    queryKey: [keyCollection.blogs],
+    queryKey: [keyCollection.events],
     queryFn: () => {
       const q = query(
-        collection(firebaseStore, keyCollection.blogs),
+        collection(firebaseStore, keyCollection.events),
         orderBy("title")
       );
       getDocs(q).then((querySnapshot) => {
         const data = querySnapshot.docs.map((doc) => {
-          const item = doc.data() as IBlogs;
+          const item = doc.data() as IEvents;
           item.id = doc.id;
           return item;
         });
 
-        setBlogs(data);
+        setEvents(data);
         return data;
       });
     },
     staleTime: Infinity,
   });
-  return { blogs };
+  return { events };
 };

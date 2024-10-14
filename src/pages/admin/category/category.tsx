@@ -39,6 +39,13 @@ const AdminCategory = () => {
             refetchType: "all"
         })
     }
+    const handleCloseModal = () => {
+        setIsModalOpen(false)
+    }
+    const handleOpenModal = (id: string) => {
+        setIsModalOpen(true);
+        setId(id);
+    }
     return (
         <section className="my-4">
             <div className="card">
@@ -51,10 +58,7 @@ const AdminCategory = () => {
                             <button
                                 className="btn btn-lg btn-outline-primary"
                                 type="button"
-                                onClick={() => {
-                                    setIsModalOpen(true);
-                                    setId("0");
-                                }}
+                                onClick={() => handleOpenModal("0")}
                             >
                                 <i className="fa-solid fa-plus"></i> Create New Category
                             </button>
@@ -83,10 +87,7 @@ const AdminCategory = () => {
                                                 <button
                                                     className="btn btn-primary me-3"
                                                     type="button"
-                                                    onClick={() => {
-                                                        setIsModalOpen(true);
-                                                        setId(items.id);
-                                                    }}
+                                                    onClick={() => handleOpenModal(items.id)}
                                                 >
                                                     <i className="fa-solid fa-pen-to-square"></i>
                                                 </button>
@@ -112,8 +113,8 @@ const AdminCategory = () => {
                 }
                 open={isModalOpen}
                 footer={false}
-                onOk={() => setIsModalOpen(false)}
-                onCancel={() => setIsModalOpen(false)}
+                onOk={handleCloseModal}
+                onCancel={handleCloseModal}
                 width={1000}
             >
                 <FormAddNewCategory id={id} />

@@ -1,11 +1,17 @@
 export const public_api_users: string = "https://fakestoreapi.com/users";
+
 export const keyCollection = {
   categories: "categories",
   courses: "courses",
   users: "users",
   blogs: "blogs",
+  events: "events",
+  zoom: "zoom",
+  quizs: "quizs",
 };
 
+export const keyToken = "userToken";
+export const keyInfo = "userInfo";
 // export const listCourses = [
 //   {
 //     title: "Modern JavaScript Frontend Development",

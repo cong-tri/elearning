@@ -31,7 +31,7 @@ const Blog = () => {
                                             </div>
                                             <div className="card-body">
                                                 <h2 className="card-title fw-bold">
-                                                    {items.label_1}
+                                                    {items.title}
                                                 </h2>
                                                 <p className="text-secondary my-3">
                                                     {items.content_1}

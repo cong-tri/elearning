@@ -5,53 +5,55 @@ import { MainContext } from "../../../context/main-provider";
 
 import { message, Modal, Table } from "antd";
 
-import { IQuizs } from "../../../types/types";
+import { IZooms } from "../../../types/types";
 
 import { deleteDoc, doc } from "firebase/firestore";
 import { firebaseStore } from "../../../firebase-config";
 
 import { keyCollection } from "../../../constants/constants";
-import FormQuiz from "./_components/form-quiz";
+import FormZoom from "./_components/form-zoom";
 
-const AdminQuiz = () => {
+const AdminZoom = () => {
     const { data } = useContext(MainContext);
 
     const queryClient = useQueryClient();
 
-    const [quizs, setQuizs] = useState<IQuizs[]>();
+    const [zoom, setZoom] = useState<IZooms[]>();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [id, setId] = useState<string>("0");
 
     useEffect(() => {
-        if (!data?.quizs) return;
-        setQuizs(data.quizs);
+        if (!data?.zooms) return;
+        setZoom(data.zooms);
+
+        console.log(data.zooms);
     }, [data]);
 
     const columns = [
+        {
+            title: "Meet ID",
+            dataIndex: "meet_id",
+            key: "meet_id",
+        },
         {
             title: "Title",
             dataIndex: "title",
             key: "title",
         },
         {
-            title: "Attemps",
-            dataIndex: "attemps",
-            key: "attemps",
+            title: "Date",
+            dataIndex: "date",
+            key: "date",
         },
         {
-            title: "Questions",
-            dataIndex: "questions",
-            key: "questions",
-        },
-        {
-            title: "Type",
-            dataIndex: "type",
-            key: "type",
-        },
-        {
-            title: "Host_by",
+            title: "Date",
             dataIndex: "host_by",
             key: "host_by",
+        },
+        {
+            title: "Start time",
+            dataIndex: "start_time",
+            key: "start_time",
         },
         {
             title: "Created By",
@@ -62,7 +64,7 @@ const AdminQuiz = () => {
             title: "Action",
             dataIndex: "",
             key: "x",
-            render: (record: IQuizs) => (
+            render: (record: IZooms) => (
                 <div className="text-center">
                     <button
                         className="btn btn-primary me-3"
@@ -86,26 +88,25 @@ const AdminQuiz = () => {
         },
     ];
     const handleDelele = async (id: string) => {
-        await deleteDoc(doc(firebaseStore, keyCollection.quizs, id));
-
-        message.success("Delete quiz successfully", 2);
+        await deleteDoc(doc(firebaseStore, keyCollection.zoom, id));
+        message.success("Delete zoom successfully", 2);
 
         await queryClient.invalidateQueries({
-            queryKey: [keyCollection.quizs],
+            queryKey: [keyCollection.zoom],
             refetchType: "all",
         });
     };
     return (
         <section className="my-4">
             <Table
-                dataSource={quizs}
+                dataSource={zoom}
                 columns={columns}
                 bordered
                 title={() => (
                     <>
                         <div className="hstack gap-3">
                             <div>
-                                <h3 className="fw-bold">List Quizs</h3>
+                                <h3 className="fw-bold">List Zooms</h3>
                             </div>
                             <div className="ms-auto">
                                 <button
@@ -117,7 +118,7 @@ const AdminQuiz = () => {
                                     }}
                                 >
                                     <i className="fa-solid fa-plus"></i>
-                                    Create new quiz
+                                    Create new zoom
                                 </button>
                             </div>
                         </div>
@@ -128,7 +129,7 @@ const AdminQuiz = () => {
                 title={
                     <>
                         <h2 className="fw-bold">
-                            {id === "0" ? "Create New Quiz" : "Edit quiz"}
+                            {id === "0" ? "Create New Zoom" : "Edit zoom"}
                         </h2>
                     </>
                 }
@@ -138,10 +139,10 @@ const AdminQuiz = () => {
                 onCancel={() => setIsModalOpen(false)}
                 width={1000}
             >
-                <FormQuiz id={id} />
+                <FormZoom id={id} />
             </Modal>
         </section>
     );
 };
 
-export default AdminQuiz;
+export default AdminZoom;

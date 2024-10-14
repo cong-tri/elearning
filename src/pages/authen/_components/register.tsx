@@ -1,4 +1,47 @@
+import { message } from "antd";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
+import React, { useState } from "react";
+import { firebaseStore } from "../../../firebase-config";
+import { keyCollection } from "../../../constants/constants";
+
+type Register = {
+    email: string;
+    password: string;
+    confirmpassword: string
+};
+const defaultValue: Register = {
+    email: "",
+    password: "",
+    confirmpassword: ""
+}
 const Register = () => {
+
+    const [formData, setFormData] = useState<Register>(defaultValue);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({ ...formData, [e.currentTarget.name]: e.currentTarget.value });
+    };
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        console.log(formData);
+
+        if (formData.password !== formData.confirmpassword) {
+            console.log("Your password and confirm password are not correct.");
+            return
+        }
+
+        const auth = getAuth();
+        try {
+            await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+            // await addDoc(collection(firebaseStore, keyCollection.users), {formData.});
+
+            message.success("Successfully created account. Please login to signin!", 2, () => setFormData(defaultValue))
+
+        } catch (error) {
+            console.error('Error during registration:', error);
+        }
+    };
     return (
         <>
             <h1 className="text-center fw-bold mb-3">Register</h1>
@@ -8,49 +51,10 @@ const Register = () => {
                     Login
                 </span>
             </p>
-            <form action="" className="mt-xl-4">
-                <div className="row row-cols-1 row-cols-md-2 gy-3 gy-xl-4 mb-4">
-                    <div className="col">
-                        <label htmlFor="firstname" className="form-label fs-4">
-                            First Name
-                        </label>
-                        <input
-                            type="text"
-                            className="form-control form-control-lg"
-                            name="firstname"
-                            id="firstname"
-                            aria-describedby="helpId"
-                            placeholder={"Your first name"}
-                        />
-                    </div>
-                    <div className="col">
-                        <label htmlFor="lastname" className="form-label fs-4">
-                            Last Name
-                        </label>
-                        <input
-                            type="text"
-                            className="form-control form-control-lg"
-                            name="lastname"
-                            id="lastname"
-                            aria-describedby="helpId"
-                            placeholder={"Your last name"}
-                        />
-                    </div>
-                    <div className="col">
+            <form action="" className="mt-xl-4" onSubmit={handleSubmit}>
+                <div className="">
+                    <div className="mb-xl-4">
                         <label htmlFor="username" className="form-label fs-4">
-                            Username
-                        </label>
-                        <input
-                            type="text"
-                            className="form-control form-control-lg"
-                            name="username"
-                            id="username"
-                            aria-describedby="helpId"
-                            placeholder={"Your username"}
-                        />
-                    </div>
-                    <div className="col">
-                        <label htmlFor="email" className="form-label fs-4">
                             Email
                         </label>
                         <input
@@ -59,25 +63,14 @@ const Register = () => {
                             name="email"
                             id="email"
                             aria-describedby="helpId"
+                            onChange={handleChange}
+                            value={formData.email}
                             placeholder={"Your email"}
                         />
                     </div>
-                    <div className="col">
+                    <div className="mb-xl-4">
                         <label htmlFor="password" className="form-label fs-4">
                             Password
-                        </label>
-                        <input
-                            type="text"
-                            className="form-control form-control-lg"
-                            name="password"
-                            id="password"
-                            aria-describedby="helpId"
-                            placeholder={"Your password"}
-                        />
-                    </div>
-                    <div className="col">
-                        <label htmlFor="password" className="form-label fs-4">
-                            Confirm password
                         </label>
                         <input
                             type="password"
@@ -85,7 +78,23 @@ const Register = () => {
                             name="password"
                             id="password"
                             aria-describedby="helpId"
+                            value={formData.password}
+                            onChange={handleChange}
                             placeholder={"Your password"}
+                        />
+                    </div>
+                    <div className="mb-xl-4">
+                        <label htmlFor="confirmpassword" className="form-label fs-4">
+                            Confirm password
+                        </label>
+                        <input
+                            type="password"
+                            className="form-control form-control-lg"
+                            name="confirmpassword"
+                            id="confirmpassword"
+                            value={formData.confirmpassword}
+                            onChange={handleChange}
+                            placeholder={"Your confirm password"}
                         />
                     </div>
                 </div>
@@ -98,7 +107,7 @@ const Register = () => {
                     </div>
                 </div>
                 <div className="">
-                    <button className="btn btn-lg btn-primary w-100" type="button">Register</button>
+                    <button className="btn btn-lg btn-primary w-100" type="submit">Register</button>
                 </div>
             </form>
         </>

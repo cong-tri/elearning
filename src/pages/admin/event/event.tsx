@@ -1,4 +1,4 @@
-// tao file blog.tsx
+// tao file event.tsx trong folder event
 
 import { useContext, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -7,26 +7,26 @@ import { MainContext } from "../../../context/main-provider";
 
 import { message, Modal, Table } from "antd";
 
-import { IBlogs } from "../../../types/types";
+import { IEvents } from "../../../types/types";
 
 import { deleteDoc, doc } from "firebase/firestore";
 import { firebaseStore } from "../../../firebase-config";
 
 import { keyCollection } from "../../../constants/constants";
-import FormBlog from "./_components/form-blog";
+import FormEvent from "./_components/form-event";
 
-const AdminBlog = () => {
+const AdminEvent = () => {
     const { data } = useContext(MainContext);
 
     const queryClient = useQueryClient();
 
-    const [blogs, setBlogs] = useState<IBlogs[]>();
+    const [events, setEvents] = useState<IEvents[]>();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [id, setId] = useState<string>("0");
 
     useEffect(() => {
-        if (!data?.blogs) return;
-        setBlogs(data.blogs);
+        if (!data?.events) return;
+        setEvents(data.events);
     }, [data]);
 
     const columns = [
@@ -49,7 +49,7 @@ const AdminBlog = () => {
             title: "Action",
             dataIndex: "",
             key: "x",
-            render: (record: IBlogs) => (
+            render: (record: IEvents) => (
                 <div className="text-center">
                     <button
                         className="btn btn-primary me-3"
@@ -73,26 +73,26 @@ const AdminBlog = () => {
         },
     ];
     const handleDelele = async (id: string) => {
-        await deleteDoc(doc(firebaseStore, keyCollection.blogs, id));
+        await deleteDoc(doc(firebaseStore, keyCollection.events, id));
 
-        message.success("Delete blog successfully", 2);
+        message.success("Delete event successfully", 2);
 
         await queryClient.invalidateQueries({
-            queryKey: [keyCollection.blogs],
+            queryKey: [keyCollection.events],
             refetchType: "all",
         });
     };
     return (
         <section className="my-4">
             <Table
-                dataSource={blogs}
+                dataSource={events}
                 columns={columns}
                 bordered
                 title={() => (
                     <>
                         <div className="hstack gap-3">
                             <div>
-                                <h3 className="fw-bold">List Blogs</h3>
+                                <h3 className="fw-bold">List Events</h3>
                             </div>
                             <div className="ms-auto">
                                 <button
@@ -104,7 +104,7 @@ const AdminBlog = () => {
                                     }}
                                 >
                                     <i className="fa-solid fa-plus"></i>
-                                    Create new blog
+                                    Create new event
                                 </button>
                             </div>
                         </div>
@@ -159,29 +159,6 @@ const AdminBlog = () => {
                                         >
                                             <div className="accordion-body">
                                                 <p>{record.content_2}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="accordion-item">
-                                        <p className="accordion-header">
-                                            <button
-                                                className="accordion-button collapsed"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#content3"
-                                                aria-expanded="false"
-                                                aria-controls="content3"
-                                            >
-                                                Content 3
-                                            </button>
-                                        </p>
-                                        <div
-                                            id="content3"
-                                            className="accordion-collapse collapse"
-                                            data-bs-parent="#accordionExample"
-                                        >
-                                            <div className="accordion-body">
-                                                <p>{record.content_3}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -248,7 +225,7 @@ const AdminBlog = () => {
                 title={
                     <>
                         <h2 className="fw-bold">
-                            {id === "0" ? "Create New Blog" : "Edit blog"}
+                            {id === "0" ? "Create New Event" : "Edit event"}
                         </h2>
                     </>
                 }
@@ -258,10 +235,10 @@ const AdminBlog = () => {
                 onCancel={() => setIsModalOpen(false)}
                 width={1000}
             >
-                <FormBlog id={id} />
+                <FormEvent id={id} />
             </Modal>
         </section>
     );
 };
 
-export default AdminBlog;
+export default AdminEvent;
