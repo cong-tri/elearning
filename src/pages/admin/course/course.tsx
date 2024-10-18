@@ -10,15 +10,16 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { firebaseStore } from "../../../firebase-config";
 import { useQueryClient } from "@tanstack/react-query";
 import { keyCollection } from "../../../constants/constants";
+import { AdminContext } from "../../../context/admin-provider";
 
 const AdminCourse = () => {
     const { data } = useContext(MainContext);
+    const { data: admin } = useContext(AdminContext);
+
     const queryClient = useQueryClient();
 
     const [category, setCategory] = useState<ICategory[]>();
     const [course, setCourse] = useState<ICourses[]>();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [id, setId] = useState<string>("0");
 
     useEffect(() => {
         if (!data?.categories || !data.course) return;
@@ -67,8 +68,8 @@ const AdminCourse = () => {
                         className="btn btn-primary me-3"
                         type="button"
                         onClick={() => {
-                            setIsModalOpen(true);
-                            setId(record.id);
+                            admin?.handleOpenModal()
+                            admin?.setId(record.id);
                         }}
                     >
                         <i className="fa-solid fa-pen-to-square"></i>
@@ -112,8 +113,8 @@ const AdminCourse = () => {
                                     className="btn btn-lg btn-outline-primary"
                                     type="button"
                                     onClick={() => {
-                                        setIsModalOpen(true)
-                                        setId("0")
+                                        admin?.handleOpenModal()
+                                        admin?.setId("0")
                                     }}
                                 >
                                     <i className="fa-solid fa-plus"></i>
@@ -128,17 +129,17 @@ const AdminCourse = () => {
                 title={
                     <>
                         <h2 className="fw-bold">
-                            {id === "0" ? "Create New Course" : "Edit course"}
+                            {admin?.id === "0" ? "Create New Course" : "Edit course"}
                         </h2>
                     </>
                 }
-                open={isModalOpen}
+                open={admin?.isModalOpen}
                 footer={false}
-                onOk={() => setIsModalOpen(false)}
-                onCancel={() => setIsModalOpen(false)}
+                onOk={() => admin?.handleCloseModal()}
+                onCancel={() => admin?.handleCloseModal()}
                 width={1000}
             >
-                <FormAddNewCourse category={category ?? []} id={id} />
+                <FormAddNewCourse category={category ?? []} id={admin?.id ?? ""} />
             </Modal>
         </section>
     );

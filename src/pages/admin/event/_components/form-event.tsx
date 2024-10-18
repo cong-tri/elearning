@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 
 import Input from "../../../../components/input";
 
@@ -13,6 +12,7 @@ import { firebaseStore } from "../../../../firebase-config";
 import { message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { keyCollection } from "../../../../constants/constants";
+import { AdminContext } from "../../../../context/admin-provider";
 
 const defaultValue: IEvents = {
     id: "",
@@ -30,6 +30,7 @@ const FormEvent = ({ id }: { id: string }) => {
     const queryClient = useQueryClient();
 
     const [formData, setFormData] = useState<IEvents>(defaultValue);
+    const { data: admin } = useContext(AdminContext)
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -66,6 +67,7 @@ const FormEvent = ({ id }: { id: string }) => {
             });
 
             setFormData(defaultValue);
+            admin?.handleCloseModal()
         } else {
             await setDoc(doc(firebaseStore, keyCollection.events, eve_id), data);
 
@@ -76,7 +78,8 @@ const FormEvent = ({ id }: { id: string }) => {
                 refetchType: "all",
             });
 
-            setFormData(defaultValue);
+            setFormData(defaultValue)
+            admin?.handleCloseModal()
         }
     };
 
@@ -181,7 +184,7 @@ const FormEvent = ({ id }: { id: string }) => {
                                     readonly={true}
                                 />
                             </div>
-                            <div className="col">
+                            <div className="col-12">
                                 <Input
                                     id="content_1"
                                     name="content_1"
@@ -194,7 +197,7 @@ const FormEvent = ({ id }: { id: string }) => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className="col">
+                            <div className="col-12">
                                 <Input
                                     id="content_2"
                                     name="content_2"

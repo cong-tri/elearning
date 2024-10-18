@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Input from "../../../../components/input";
@@ -12,6 +12,7 @@ import { message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { keyCollection } from "../../../../constants/constants";
 import { IZooms } from "../../../../types/types";
+import { AdminContext } from "../../../../context/admin-provider";
 
 const defaultValue: IZooms = {
     id: "",
@@ -30,6 +31,7 @@ const FormZoom = ({ id }: { id: string }) => {
     const queryClient = useQueryClient();
 
     const [formData, setFormData] = useState<IZooms>(defaultValue);
+    const { data: admin } = useContext(AdminContext)
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -65,7 +67,8 @@ const FormZoom = ({ id }: { id: string }) => {
                 refetchType: "all",
             });
 
-            setFormData(defaultValue);
+            setFormData(defaultValue)
+            admin?.handleCloseModal()
         } else {
             await setDoc(doc(firebaseStore, keyCollection.zoom, zoom_id), data);
 
@@ -76,7 +79,8 @@ const FormZoom = ({ id }: { id: string }) => {
                 refetchType: "all",
             });
 
-            setFormData(defaultValue);
+            setFormData(defaultValue)
+            admin?.handleCloseModal()
         }
     };
 

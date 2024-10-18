@@ -1,11 +1,12 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
+import React, { useContext } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 
-import { Layout, theme } from "antd";
+import { Avatar, Layout, theme } from "antd";
 
 import MenuNav from "../../components/admin/menu";
-import { MainProvider } from "../../context/main-provider";
+import { MainContext, MainProvider } from "../../context/main-provider";
 import { AdminProvider } from "../../context/admin-provider";
+import { RightOutlined, UserOutlined } from "@ant-design/icons";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -20,13 +21,17 @@ const siderStyle: React.CSSProperties = {
     scrollbarWidth: "thin",
     scrollbarColor: "unset",
     maxWidth: "auto",
-    maxHeight: "auto"
+    maxHeight: "auto",
 };
 
 const AdminLayout: React.FC = () => {
+    const { userProfile } = useContext(MainContext)
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
+
+    const location = useLocation();
+    const pathname = location.pathname.replace("/admin/", "");
 
     return (
         <MainProvider>
@@ -36,28 +41,18 @@ const AdminLayout: React.FC = () => {
                     <MenuNav />
                 </Sider>
                 <Layout style={{ marginInlineStart: 200 }}>
-                    <Header className="bg-primary py-4">
-                        <div className="row g-0 justify-content-between align-items-center">
-                            <div className="col-4">
-                                <div className="row align-items-center">
-                                    <div className="col-auto">
-                                        <img
-                                            src="https://i.pravatar.cc/100"
-                                            className="img-thumbnail rounded-circle d-inline"
-                                            alt="avatar"
-                                        />
-                                    </div>
-                                    <div className="col-auto">
-                                        <h3 className="text-white">
-                                            Admin
-                                        </h3>
-                                    </div>
-                                </div>
+                    <Header className="bg-light border-bottom border-2 shadow-lg py-4">
+                        <div className="hstack gap-3">
+                            <div>
+                                <h4>
+                                    {" "}
+                                    <span className="text-secondary">Admin</span>{" "}
+                                    <RightOutlined /> <span className="text-capitalize">{pathname}</span>
+                                </h4>
                             </div>
-                            <div className="col-auto text-end">
-                                <h3 className="text-white">
-                                    Welcome Dao Cong Tri
-                                </h3>
+                            <div className="ms-auto">
+                                <Avatar size={50} icon={<UserOutlined />} />
+                                <span className="ms-2">Welcome {userProfile?.name.firstname} {userProfile?.name.lastname}</span>
                             </div>
                         </div>
                     </Header>

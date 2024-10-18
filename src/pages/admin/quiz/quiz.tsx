@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { MainContext } from "../../../context/main-provider";
+import { AdminContext } from "../../../context/admin-provider";
 
 import { message, Modal, Table } from "antd";
 
@@ -15,12 +16,12 @@ import FormQuiz from "./_components/form-quiz";
 
 const AdminQuiz = () => {
     const { data } = useContext(MainContext);
+    const { data: admin } = useContext(AdminContext);
 
     const queryClient = useQueryClient();
 
     const [quizs, setQuizs] = useState<IQuizs[]>();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [id, setId] = useState<string>("0");
 
     useEffect(() => {
         if (!data?.quizs) return;
@@ -69,7 +70,7 @@ const AdminQuiz = () => {
                         type="button"
                         onClick={() => {
                             setIsModalOpen(true);
-                            setId(record.id);
+                            admin?.setId(record.id);
                         }}
                     >
                         <i className="fa-solid fa-pen-to-square"></i>
@@ -113,7 +114,7 @@ const AdminQuiz = () => {
                                     type="button"
                                     onClick={() => {
                                         setIsModalOpen(true);
-                                        setId("0");
+                                        admin?.setId("0");
                                     }}
                                 >
                                     <i className="fa-solid fa-plus"></i>
@@ -128,7 +129,7 @@ const AdminQuiz = () => {
                 title={
                     <>
                         <h2 className="fw-bold">
-                            {id === "0" ? "Create New Quiz" : "Edit quiz"}
+                            {admin?.id === "0" ? "Create New Quiz" : "Edit quiz"}
                         </h2>
                     </>
                 }
@@ -138,7 +139,7 @@ const AdminQuiz = () => {
                 onCancel={() => setIsModalOpen(false)}
                 width={1000}
             >
-                <FormQuiz id={id} />
+                <FormQuiz id={admin?.id ?? ""} />
             </Modal>
         </section>
     );

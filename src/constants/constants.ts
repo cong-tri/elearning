@@ -8,6 +8,7 @@ export const keyCollection = {
   events: "events",
   zoom: "zoom",
   quizs: "quizs",
+  authorize: "authorize",
 };
 
 export const keyToken = "userToken";

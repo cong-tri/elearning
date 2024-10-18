@@ -13,16 +13,16 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { firebaseStore } from "../../../firebase-config";
 
 import { keyCollection } from "../../../constants/constants";
+import { AdminContext } from "../../../context/admin-provider";
 
 
 const AdminCategory = () => {
     const { data } = useContext(MainContext);
+    const { data: admin } = useContext(AdminContext);
 
     const queryClient = useQueryClient();
 
     const [category, setCategory] = useState<ICategory[]>();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [id, setId] = useState<string>("0");
 
     useEffect(() => {
         if (!data?.categories) return;
@@ -39,13 +39,7 @@ const AdminCategory = () => {
             refetchType: "all"
         })
     }
-    const handleCloseModal = () => {
-        setIsModalOpen(false)
-    }
-    const handleOpenModal = (id: string) => {
-        setIsModalOpen(true);
-        setId(id);
-    }
+
     return (
         <section className="my-4">
             <div className="card">
@@ -58,7 +52,10 @@ const AdminCategory = () => {
                             <button
                                 className="btn btn-lg btn-outline-primary"
                                 type="button"
-                                onClick={() => handleOpenModal("0")}
+                                onClick={() => {
+                                    admin?.handleOpenModal()
+                                    admin?.setId("0")
+                                }}
                             >
                                 <i className="fa-solid fa-plus"></i> Create New Category
                             </button>
@@ -87,7 +84,10 @@ const AdminCategory = () => {
                                                 <button
                                                     className="btn btn-primary me-3"
                                                     type="button"
-                                                    onClick={() => handleOpenModal(items.id)}
+                                                    onClick={() => {
+                                                        admin?.handleOpenModal()
+                                                        admin?.setId(items.id)
+                                                    }}
                                                 >
                                                     <i className="fa-solid fa-pen-to-square"></i>
                                                 </button>
@@ -107,17 +107,23 @@ const AdminCategory = () => {
                 title={
                     <>
                         <h2 className="fw-bold">
-                            {id === "0" ? "Create New Category" : "Edit category"}
+                            {admin?.id === "0" ? "Create New Category" : "Edit category"}
                         </h2>
                     </>
                 }
-                open={isModalOpen}
+                open={admin?.isModalOpen}
                 footer={false}
-                onOk={handleCloseModal}
-                onCancel={handleCloseModal}
+                onOk={() => {
+                    admin?.handleCloseModal()
+                    admin?.setFormData(null)
+                }}
+                onCancel={() => {
+                    admin?.handleCloseModal()
+                    admin?.setFormData(null)
+                }}
                 width={1000}
             >
-                <FormAddNewCategory id={id} />
+                <FormAddNewCategory id={admin?.id ?? ""} />
             </Modal>
         </section>
     );

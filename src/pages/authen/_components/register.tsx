@@ -1,45 +1,87 @@
-import { message } from "antd";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
 import React, { useState } from "react";
-import { firebaseStore } from "../../../firebase-config";
-import { keyCollection } from "../../../constants/constants";
 
-type Register = {
+import { message } from "antd";
+
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, firebaseStore } from "../../../firebase-config";
+
+import { keyCollection } from "../../../constants/constants";
+import { IUsers } from "../../../types/types";
+
+import moment from "moment";
+
+type InputRegister = {
     email: string;
     password: string;
-    confirmpassword: string
+    confirmpassword: string;
 };
-const defaultValue: Register = {
+const defaultValue: InputRegister = {
     email: "",
     password: "",
-    confirmpassword: ""
-}
+    confirmpassword: "",
+};
 const Register = () => {
+    const [formData, setFormData] = useState<InputRegister>(defaultValue);
 
-    const [formData, setFormData] = useState<Register>(defaultValue);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         setFormData({ ...formData, [e.currentTarget.name]: e.currentTarget.value });
     };
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        console.log(formData);
+        e.preventDefault();
 
-        if (formData.password !== formData.confirmpassword) {
-            console.log("Your password and confirm password are not correct.");
+        if (formData.email === "" || formData.password === "" || formData.confirmpassword === "") {
+            message.error("Please entered full field.")
             return
         }
 
-        const auth = getAuth();
+        if (formData.password !== formData.confirmpassword) {
+            message.error("Your password and confirm password are not correct.");
+            return;
+        }
+
         try {
-            await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-            // await addDoc(collection(firebaseStore, keyCollection.users), {formData.});
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                formData.email,
+                formData.password
+            );
+            const user = userCredential.user;
 
-            message.success("Successfully created account. Please login to signin!", 2, () => setFormData(defaultValue))
+            const username = formData.email.replace("@gmail.com", "");
 
+            const newUser: IUsers = {
+                address: "",
+                user_id: user.uid,
+                code: "",
+                id: "",
+                email: formData.email,
+                username,
+                name: { firstname: "", lastname: "" },
+                phone: "",
+                created_at: moment().format(),
+                created_by: "Dao Cong Tri",
+                role: "user",
+                description: "",
+                carts: []
+            };
+            const { id, ...data } = newUser;
+
+            await setDoc(doc(firebaseStore, keyCollection.users, user.uid), data);
+
+            message.success(
+                "Successfully created account. Please login to signin!",
+                2,
+                () => setFormData(defaultValue)
+            );
         } catch (error) {
-            console.error('Error during registration:', error);
+            console.error("Error during registration:", error);
+
+            if (error instanceof Error) {
+                message.error(error.message)
+            }
         }
     };
     return (
@@ -47,9 +89,7 @@ const Register = () => {
             <h1 className="text-center fw-bold mb-3">Register</h1>
             <p className="text-secondary text-center">
                 Already have an account?{" "}
-                <span className="text-primary fw-medium">
-                    Login
-                </span>
+                <span className="text-primary fw-medium">Login</span>
             </p>
             <form action="" className="mt-xl-4" onSubmit={handleSubmit}>
                 <div className="">
@@ -100,18 +140,25 @@ const Register = () => {
                 </div>
                 <div className="form-check mb-4">
                     <div>
-                        <input className="form-check-input" type="checkbox" id="flexCheckDefault" value={"check"} />
+                        <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="flexCheckDefault"
+                            value={"check"}
+                        />
                         <label className="form-check-label" htmlFor="flexCheckDefault">
                             Accept the Terms and Privacy Policy
                         </label>
                     </div>
                 </div>
                 <div className="">
-                    <button className="btn btn-lg btn-primary w-100" type="submit">Register</button>
+                    <button className="btn btn-lg btn-primary w-100" type="submit">
+                        Register
+                    </button>
                 </div>
             </form>
         </>
-    )
-}
+    );
+};
 
-export default Register
+export default Register;

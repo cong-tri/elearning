@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { MainContext } from "../../../context/main-provider";
+import { AdminContext } from "../../../context/admin-provider";
 
 import { message, Modal, Table } from "antd";
 
@@ -17,12 +18,12 @@ import FormEvent from "./_components/form-event";
 
 const AdminEvent = () => {
     const { data } = useContext(MainContext);
+    const { data: admin } = useContext(AdminContext);
 
     const queryClient = useQueryClient();
 
     const [events, setEvents] = useState<IEvents[]>();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [id, setId] = useState<string>("0");
 
     useEffect(() => {
         if (!data?.events) return;
@@ -56,7 +57,7 @@ const AdminEvent = () => {
                         type="button"
                         onClick={() => {
                             setIsModalOpen(true);
-                            setId(record.id);
+                            admin?.setId(record.id);
                         }}
                     >
                         <i className="fa-solid fa-pen-to-square"></i>
@@ -100,7 +101,7 @@ const AdminEvent = () => {
                                     type="button"
                                     onClick={() => {
                                         setIsModalOpen(true);
-                                        setId("0");
+                                        admin?.setId("0");
                                     }}
                                 >
                                     <i className="fa-solid fa-plus"></i>
@@ -225,7 +226,7 @@ const AdminEvent = () => {
                 title={
                     <>
                         <h2 className="fw-bold">
-                            {id === "0" ? "Create New Event" : "Edit event"}
+                            {admin?.id === "0" ? "Create New Event" : "Edit event"}
                         </h2>
                     </>
                 }
@@ -235,7 +236,7 @@ const AdminEvent = () => {
                 onCancel={() => setIsModalOpen(false)}
                 width={1000}
             >
-                <FormEvent id={id} />
+                <FormEvent id={admin?.id ?? ""} />
             </Modal>
         </section>
     );

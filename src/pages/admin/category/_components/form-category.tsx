@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Input from "../../../../components/input";
@@ -13,6 +13,7 @@ import { firebaseStore } from "../../../../firebase-config";
 import { message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { keyCollection } from "../../../../constants/constants";
+import { AdminContext } from "../../../../context/admin-provider";
 
 const defaultValue: ICategory = {
     id: "",
@@ -25,6 +26,8 @@ const defaultValue: ICategory = {
 const FormAddNewCategory = ({ id }: { id: string }) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+
+    const { data: admin } = useContext(AdminContext)
 
     const [formData, setFormData] = useState<ICategory>(defaultValue);
 
@@ -60,6 +63,8 @@ const FormAddNewCategory = ({ id }: { id: string }) => {
                 queryKey: [keyCollection.categories],
                 refetchType: "all",
             });
+            setFormData(defaultValue)
+            admin?.handleCloseModal()
         } else {
             await setDoc(doc(firebaseStore, keyCollection.categories, cate_id), data);
 
@@ -69,6 +74,9 @@ const FormAddNewCategory = ({ id }: { id: string }) => {
                 queryKey: [keyCollection.categories],
                 refetchType: "all"
             })
+
+            setFormData(defaultValue)
+            admin?.handleCloseModal()
         }
     };
 

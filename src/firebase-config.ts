@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 // import { keyCollection, listCourses } from "./constants/constants";
 
 const firebaseConfig = {
@@ -17,6 +18,7 @@ const firebaseConfig = {
 export const firebaseApp = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(firebaseApp);
 export const firebaseStore = getFirestore(firebaseApp);
+export const auth = getAuth();
 
 // const addMultiDocs = async () => {
 //   const batch = writeBatch(firebaseStore);

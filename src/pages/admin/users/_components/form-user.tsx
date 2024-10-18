@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 
-import { IUsers } from "../../../../types/types";
+import { AdminContext } from "../../../../context/admin-provider";
+
+import { message } from "antd";
 
 import moment from "moment";
 
@@ -10,24 +11,9 @@ import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { firebaseStore } from "../../../../firebase-config";
 
 import Input from "../../../../components/input";
-import { message } from "antd";
 
+import { InputUser, IUsers } from "../../../../types/types";
 import { keyCollection } from "../../../../constants/constants";
-
-type InputUser = {
-    id: string;
-    user_id: string;
-    code: string;
-    address: string;
-    email: string;
-    username: string;
-    firstname: string;
-    lastname: string;
-    phone: string;
-    role: "admin" | "user",
-    created_at: Date | string,
-    created_by: string,
-}
 
 const defaultValue: InputUser = {
     id: "",
@@ -42,11 +28,13 @@ const defaultValue: InputUser = {
     role: "user",
     created_at: moment().format(),
     created_by: "Dao Cong Tri",
+    description: ""
 }
 
 const FormUser = ({ id }: { id: string }) => {
-    const navigate = useNavigate();
     const queryClient = useQueryClient();
+
+    const { data: admin } = useContext(AdminContext);
 
     const [formData, setFormData] = useState<InputUser>(defaultValue);
 
@@ -82,9 +70,11 @@ const FormUser = ({ id }: { id: string }) => {
                 lastname: formData.lastname,
             },
             phone: formData.phone,
-            created_at: formData.created_at,
+            created_at: formData.created_at as string,
             created_by: formData.created_by,
-            role: formData.role
+            description: formData.description,
+            role: formData.role,
+            carts: []
         }
         console.log(formData);
 
@@ -99,7 +89,9 @@ const FormUser = ({ id }: { id: string }) => {
                 queryKey: [keyCollection.users],
                 refetchType: "all",
             });
-            setFormData(defaultValue)
+            setFormData(defaultValue);
+
+            admin?.handleCloseModal()
         } else {
             await setDoc(doc(firebaseStore, keyCollection.users, userID), data);
             message.success("Update user successfully", 2);
@@ -108,7 +100,10 @@ const FormUser = ({ id }: { id: string }) => {
                 queryKey: [keyCollection.users],
                 refetchType: "all"
             })
+
             setFormData(defaultValue)
+            admin?.handleCloseModal()
+
         }
     };
 
@@ -133,6 +128,7 @@ const FormUser = ({ id }: { id: string }) => {
                             lastname: data.name.lastname,
                             phone: data.phone,
                             role: data.role,
+                            description: data.description,
                             created_at: data.created_at,
                             created_by: data.created_by,
                         }
@@ -142,7 +138,7 @@ const FormUser = ({ id }: { id: string }) => {
                 }
             );
         }
-    }, [id, navigate]);
+    }, [id]);
     return (
         <>
             <div className="card">
@@ -274,6 +270,19 @@ const FormUser = ({ id }: { id: string }) => {
                                     classnameInput="form-control form-control-lg"
                                     type="text"
                                     value={formData.created_at as string}
+                                    readonly={true}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className="col-12">
+                                <Input
+                                    id="description"
+                                    name="description"
+                                    label="Description"
+                                    classnameDiv="form-floating mb-4"
+                                    classnameInput="form-control form-control-lg h-100"
+                                    rows={4}
+                                    value={formData.description as string}
                                     readonly={true}
                                     onChange={handleChange}
                                 />

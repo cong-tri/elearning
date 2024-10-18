@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Input from "../../../../components/input";
@@ -13,6 +13,7 @@ import { firebaseStore } from "../../../../firebase-config";
 import { message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { keyCollection } from "../../../../constants/constants";
+import { AdminContext } from "../../../../context/admin-provider";
 
 const defaultValue: IQuizs = {
     id: "",
@@ -32,6 +33,7 @@ const FormQuiz = ({ id }: { id: string }) => {
     const queryClient = useQueryClient();
 
     const [formData, setFormData] = useState<IQuizs>(defaultValue);
+    const { data: admin } = useContext(AdminContext)
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -66,6 +68,9 @@ const FormQuiz = ({ id }: { id: string }) => {
                 queryKey: [keyCollection.quizs],
                 refetchType: "all",
             });
+
+            setFormData(defaultValue)
+            admin?.handleCloseModal()
         } else {
             await setDoc(doc(firebaseStore, keyCollection.quizs, qui_id), data);
 
@@ -75,6 +80,9 @@ const FormQuiz = ({ id }: { id: string }) => {
                 queryKey: [keyCollection.quizs],
                 refetchType: "all",
             });
+
+            setFormData(defaultValue)
+            admin?.handleCloseModal()
         }
     };
 

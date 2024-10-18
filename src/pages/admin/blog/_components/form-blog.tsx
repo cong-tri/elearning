@@ -1,6 +1,9 @@
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { AdminContext } from "../../../../context/admin-provider";
 
 import Input from "../../../../components/input";
 
@@ -12,7 +15,7 @@ import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { firebaseStore } from "../../../../firebase-config";
 
 import { message } from "antd";
-import { useQueryClient } from "@tanstack/react-query";
+
 import { keyCollection } from "../../../../constants/constants";
 
 const defaultValue: IBlogs = {
@@ -31,6 +34,8 @@ const defaultValue: IBlogs = {
 const FormBlog = ({ id }: { id: string }) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+
+    const { data: admin } = useContext(AdminContext)
 
     const [formData, setFormData] = useState<IBlogs>(defaultValue);
 
@@ -69,6 +74,7 @@ const FormBlog = ({ id }: { id: string }) => {
             });
 
             setFormData(defaultValue);
+            admin?.handleCloseModal()
         } else {
             await setDoc(doc(firebaseStore, keyCollection.blogs, blo_id), data);
 
@@ -80,6 +86,7 @@ const FormBlog = ({ id }: { id: string }) => {
             });
 
             setFormData(defaultValue);
+            admin?.handleCloseModal()
         }
     };
 
@@ -144,7 +151,7 @@ const FormBlog = ({ id }: { id: string }) => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className="col">
+                            <div className="col-12">
                                 <Input
                                     id="content_1"
                                     name="content_1"
@@ -157,7 +164,7 @@ const FormBlog = ({ id }: { id: string }) => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className="col">
+                            <div className="col-12">
                                 <Input
                                     id="content_2"
                                     name="content_2"
@@ -170,7 +177,7 @@ const FormBlog = ({ id }: { id: string }) => {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className="col">
+                            <div className="col-12">
                                 <Input
                                     id="content_3"
                                     name="content_3"
@@ -190,7 +197,7 @@ const FormBlog = ({ id }: { id: string }) => {
                                     label="Date"
                                     classnameDiv="form-floating mb-4"
                                     classnameInput="form-control form-control-lg"
-                                    type="text"
+                                    type="date"
                                     maxlength={100}
                                     value={formData.date}
                                     onChange={handleChange}

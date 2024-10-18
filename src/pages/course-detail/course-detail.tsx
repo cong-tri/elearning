@@ -1,21 +1,67 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { MainContext } from "../../context/main-provider";
 
 import Breadcrumb from "../../components/user/breadcrumb";
 
-import { ICategory, ICourses } from "../../types/types";
+import { ICategory, ICourses, IUsers } from "../../types/types";
 import moment from "moment";
 import Navtabs from "./_components/navtabs";
 import MoreCourse from "./_components/more-course";
+import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
+import { auth, firebaseStore } from "../../firebase-config";
+import { keyCollection, keyInfo } from "../../constants/constants";
+import { message } from "antd";
+import { setCookie } from "typescript-cookie";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CourseDetail = () => {
+    const queryClient = useQueryClient()
+    const { data, userProfile } = useContext(MainContext);
+
     const { id } = useParams<{ id: string }>();
 
-    const { data } = useContext(MainContext);
+    const navigate = useNavigate();
+
     const [detail, setDetail] = useState<ICourses>();
     const [category, setCategory] = useState<ICategory>();
+    const [carts, setCarts] = useState<ICourses[]>();
+
+    const user = auth.currentUser;
+
+    const loadUser = async () => {
+        if (!user?.uid) return;
+
+        try {
+            const userDocRef = doc(firebaseStore, keyCollection.users, user?.uid);
+            const userDoc = await getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+                const data = userDoc.data() as IUsers;
+                data.id = userDoc.id;
+
+                console.log(data.carts);
+                setCarts(data.carts)
+
+                setCookie(keyInfo, JSON.stringify(data), {
+                    path: "/",
+                    secure: false,
+                    sameSite: "strict",
+                    expires: 60 * 60 * 24,
+                });
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                message.error(error.message);
+                return;
+            }
+        }
+    };
+
+    useEffect(() => {
+        loadUser();
+    }, []);
 
     useEffect(() => {
         if (!data?.course || !data?.categories) return;
@@ -30,6 +76,48 @@ const CourseDetail = () => {
         setCategory(value[0]);
         setDetail(courseDetail[0]);
     }, [data, id]);
+
+    const handleAddToCart = async (course: ICourses) => {
+        try {
+            if (!userProfile) {
+                message.error("Please login to buy course!", 2, () =>
+                    navigate("/authen")
+                );
+                return;
+            }
+
+            const userRef = doc(firebaseStore, keyCollection.users, userProfile.id);
+
+            const isCourseInCart = carts?.some(
+                (cartCourse) => cartCourse.id === course.id
+            );
+
+            if (!isCourseInCart) {
+
+                await updateDoc(userRef, {
+                    carts: arrayUnion(course),
+                });
+
+                await queryClient.invalidateQueries({
+                    queryKey: [keyCollection.users, userProfile?.user_id],
+                    refetchType: "all",
+                });
+
+                loadUser()
+
+                message.success("Course added to cart successfully!", 2);
+
+            } else {
+                message.error("Course is already in the cart.", 2);
+                return;
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                message.error(error.message);
+                return;
+            }
+        }
+    };
     return (
         <>
             <Breadcrumb data={{ label: "Course Details", path: "Course Details" }} />
@@ -118,7 +206,9 @@ const CourseDetail = () => {
                                                     <p className="text-secondary">Course level:</p>
                                                 </div>
                                                 <div className="ms-auto text-right">
-                                                    <p className="fw-medium text-uppercase">{detail?.level}</p>
+                                                    <p className="fw-medium text-uppercase">
+                                                        {detail?.level}
+                                                    </p>
                                                 </div>
                                             </div>
                                             <div className="hstack gap-3 mb-3">
@@ -214,7 +304,13 @@ const CourseDetail = () => {
                             </div>
                             <button
                                 className="btn btn-primary btn-lg w-100 my-3"
-                                type="button"
+                                type="button" onClick={() => {
+                                    if (!detail) {
+                                        message.error("This course not exist!", 2)
+                                        return
+                                    }
+                                    handleAddToCart(detail)
+                                }}
                             >
                                 Add to Cart
                             </button>
@@ -230,9 +326,7 @@ const CourseDetail = () => {
                             </p>
                             <div className="hstack gap-3 text-secondary mt-4 py-3 border-bottom">
                                 <div>
-                                    <p>
-                                        Instructor
-                                    </p>
+                                    <p>Instructor</p>
                                 </div>
                                 <div className="ms-auto text-right">
                                     <p>{detail?.created_by}</p>
@@ -240,9 +334,7 @@ const CourseDetail = () => {
                             </div>
                             <div className="hstack gap-3 text-secondary py-3 border-bottom">
                                 <div>
-                                    <p>
-                                        Start Date
-                                    </p>
+                                    <p>Start Date</p>
                                 </div>
                                 <div className="ms-auto text-right">
                                     <p>{moment(detail?.created_at).format("MMM Do YY")}</p>
@@ -250,9 +342,7 @@ const CourseDetail = () => {
                             </div>
                             <div className="hstack gap-3 text-secondary py-3 border-bottom">
                                 <div>
-                                    <p>
-                                        Total Duration
-                                    </p>
+                                    <p>Total Duration</p>
                                 </div>
                                 <div className="ms-auto text-right">
                                     <p>10 Hours</p>
@@ -260,9 +350,7 @@ const CourseDetail = () => {
                             </div>
                             <div className="hstack gap-3 text-secondary py-3 border-bottom">
                                 <div>
-                                    <p>
-                                        Enrolled
-                                    </p>
+                                    <p>Enrolled</p>
                                 </div>
                                 <div className="ms-auto text-right">
                                     <p>100</p>
@@ -270,9 +358,7 @@ const CourseDetail = () => {
                             </div>
                             <div className="hstack gap-3 text-secondary py-3 border-bottom">
                                 <div>
-                                    <p>
-                                        Lessons
-                                    </p>
+                                    <p>Lessons</p>
                                 </div>
                                 <div className="ms-auto text-right">
                                     <p>{detail?.lessons}</p>
@@ -280,9 +366,7 @@ const CourseDetail = () => {
                             </div>
                             <div className="hstack gap-3 text-secondary py-3 border-bottom">
                                 <div>
-                                    <p>
-                                        Skill Level
-                                    </p>
+                                    <p>Skill Level</p>
                                 </div>
                                 <div className="ms-auto text-right">
                                     <p className="text-uppercase">{detail?.level}</p>
@@ -290,9 +374,7 @@ const CourseDetail = () => {
                             </div>
                             <div className="hstack gap-3 text-secondary py-3 border-bottom">
                                 <div>
-                                    <p>
-                                        Language
-                                    </p>
+                                    <p>Language</p>
                                 </div>
                                 <div className="ms-auto text-right">
                                     <p>Javascript</p>
@@ -300,9 +382,7 @@ const CourseDetail = () => {
                             </div>
                             <div className="hstack gap-3 text-secondary py-3 border-bottom">
                                 <div>
-                                    <p>
-                                        Quiz
-                                    </p>
+                                    <p>Quiz</p>
                                 </div>
                                 <div className="ms-auto text-right">
                                     <p>Yes</p>
@@ -310,16 +390,19 @@ const CourseDetail = () => {
                             </div>
                             <div className="hstack gap-3 text-secondary py-3 border-bottom">
                                 <div>
-                                    <p>
-                                        Certificate
-                                    </p>
+                                    <p>Certificate</p>
                                 </div>
                                 <div className="ms-auto text-right">
                                     <p>Yes</p>
                                 </div>
                             </div>
-                            <p className="text-center text-secondary mt-4">More inquery about course</p>
-                            <button className="btn btn-lg btn-outline-primary mt-4 w-100" type="button">
+                            <p className="text-center text-secondary mt-4">
+                                More inquery about course
+                            </p>
+                            <button
+                                className="btn btn-lg btn-outline-primary mt-4 w-100"
+                                type="button"
+                            >
                                 <i className="fa-solid fa-phone"></i>
                                 <span className="ms-2">+084 326034561</span>
                             </button>

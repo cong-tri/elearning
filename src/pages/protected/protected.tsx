@@ -1,24 +1,16 @@
+import React, { ReactNode, useContext } from "react";
+import { Navigate } from "react-router-dom";
 
-import React, { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
-import { getCookie } from 'typescript-cookie';
-import { keyToken } from '../../constants/constants';
+import { MainContext } from "../../context/main-provider";
+
 interface ProtectedRouteProps {
     children: ReactNode;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+    const { userProfile } = useContext(MainContext);
 
-    const isAuthenticated = (): boolean => {
-
-        const userInfo = getCookie(keyToken)
-
-        if (userInfo) {
-            return true
-        }
-        return false
-    }
-    if (!isAuthenticated()) {
+    if (!userProfile || userProfile.role !== "admin") {
         return <Navigate to="/authen" />;
     }
     return <>{children}</>;

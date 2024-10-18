@@ -1,53 +1,116 @@
-const AdminProfile = () => {
+import React, { useContext } from 'react'
+
+import { Avatar } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
+
+import { MainContext } from '../../../context/main-provider';
+import moment from 'moment';
+
+const AdminProfile: React.FC = () => {
+    const { userProfile } = useContext(MainContext)
+    if (!userProfile) return <div>No user profile have been found</div>
+
     return (
-        <>
-            <div className="profile-container">
-                <div className="card">
-                    <div className="card-header">
-                        <h2 className="fw-bold">
-                            My Profile
-                        </h2>
-                    </div>
-                    <div className="card-body">
-                        <div className="row mb-2">
-                            <div className="col-6 font-weight-bold">Registration Date</div>
-                            <div className="col-6">20, January 2024 9:00 PM</div>
+        <div className="profile-container">
+            <div className="card">
+                <div className="card-header">
+                    <h2 className="fw-bold">My Profile</h2>
+                </div>
+                <div className="card-body">
+                    <div className="row">
+                        <div className="col-4 text-center py-4">
+                            <Avatar shape='circle' size={120} icon={<UserOutlined />} />
+                            <div>
+                                <h4>Admin {userProfile.name.firstname} {userProfile.name.lastname}</h4>
+                            </div>
                         </div>
-                        <div className="row mb-2">
-                            <div className="col-6 font-weight-bold">First Name</div>
-                            <div className="col-6">Michle</div>
-                        </div>
-                        <div className="row mb-2">
-                            <div className="col-6 font-weight-bold">Last Name</div>
-                            <div className="col-6">Obema</div>
-                        </div>
-                        <div className="row mb-2">
-                            <div className="col-6 font-weight-bold">Username</div>
-                            <div className="col-6">obema007</div>
-                        </div>
-                        <div className="row mb-2">
-                            <div className="col-6 font-weight-bold">Email</div>
-                            <div className="col-6">obema@example.com</div>
-                        </div>
-                        <div className="row mb-2">
-                            <div className="col-6 font-weight-bold">Phone Number</div>
-                            <div className="col-6">+55 669 4456 25987</div>
-                        </div>
-                        <div className="row mb-2">
-                            <div className="col-6 font-weight-bold">Expert</div>
-                            <div className="col-6">Graphics Design</div>
-                        </div>
-                        <div className="row">
-                            <div className="col-6 font-weight-bold">Biography</div>
-                            <div className="col-6">
-                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Maiores veniam, delectus accusamus nesciunt laborum repellat laboriosam, deserunt possimus itaque iusto perferendis voluptatum quaerat cupiditate vitae. Esse aut illum perferendis nulla, corporis impedit quasi alias est!
+                        <div className="col py-4">
+                            <div className='hstack'>
+                                <div>
+                                    <h4 className='fw-bold'>
+                                        Registration Date
+                                    </h4>
+                                </div>
+                                <div className='ms-auto'>
+                                    <h4>{moment(userProfile.created_at).format("MMM Do YY")}</h4>
+                                </div>
+                            </div>
+                            <div className='hstack my-4'>
+                                <div>
+                                    <h4 className='fw-bold'>
+                                        Firstname
+                                    </h4>
+                                </div>
+                                <div className='ms-auto'>
+                                    <h4>{userProfile.name.firstname}</h4>
+                                </div>
+                            </div>
+                            <div className='hstack my-4'>
+                                <div>
+                                    <h4 className='fw-bold'>
+                                        Lastname
+                                    </h4>
+                                </div>
+                                <div className='ms-auto'>
+                                    <h4>{userProfile.name.lastname}</h4>
+                                </div>
+                            </div>
+                            <div className='hstack my-4'>
+                                <div>
+                                    <h4 className='fw-bold'>
+                                        Username
+                                    </h4>
+                                </div>
+                                <div className='ms-auto'>
+                                    <h4>{userProfile.username}</h4>
+                                </div>
+                            </div>
+                            <div className='hstack my-4'>
+                                <div>
+                                    <h4 className='fw-bold'>
+                                        Email
+                                    </h4>
+                                </div>
+                                <div className='ms-auto'>
+                                    <h4>{userProfile.email}</h4>
+                                </div>
+                            </div>
+                            <div className='hstack my-4'>
+                                <div>
+                                    <h4 className='fw-bold'>
+                                        Phone number
+                                    </h4>
+                                </div>
+                                <div className='ms-auto'>
+                                    <h4>{userProfile.phone}</h4>
+                                </div>
+                            </div>
+                            <div className='hstack my-4'>
+                                <div>
+                                    <h4 className='fw-bold'>
+                                        Address
+                                    </h4>
+                                </div>
+                                <div className='ms-auto'>
+                                    <h4>{userProfile.address}</h4>
+                                </div>
+                            </div>
+                            <div className='hstack my-4'>
+                                <div>
+                                    <h4 className='fw-bold'>
+                                        Description
+                                    </h4>
+                                </div>
+                                <div className='ms-auto'>
+                                    <h4>{userProfile.description}</h4>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </>
-    )
-}
+        </div>
+    );
+};
 
-export default AdminProfile
+export default AdminProfile;

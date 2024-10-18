@@ -1,12 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { firebaseStore } from "../firebase-config";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import { auth, firebaseStore } from "../firebase-config";
 
-import { keyCollection, keyInfo } from "../constants/constants";
+import { keyCollection } from "../constants/constants";
 import { IUsers } from "../types/types";
-import { getCookie } from "typescript-cookie";
 
 export const useGetUser = () => {
   const [users, setUsers] = useState<IUsers[]>();
@@ -32,8 +38,39 @@ export const useGetUser = () => {
     staleTime: Infinity,
   });
 
-  // const userInfo = JSON.parse(getCookie(keyInfo) ?? "");
-  // console.log(userInfo);
-
   return { users };
+};
+
+export const useGetInfoUser = () => {
+  const user = auth.currentUser;
+
+  const { data } = useQuery({
+    queryKey: [keyCollection.users, user?.uid],
+    queryFn: async () => {
+      try {
+        if (!user || !user?.uid) {
+          console.error("User have not authorized!");
+          return;
+        }
+
+        const userDocRef = doc(firebaseStore, keyCollection.users, user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const data = userDoc.data() as IUsers;
+          data.id = userDoc.id;
+          return data;
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error(error.message);
+          return;
+        }
+      }
+    },
+    enabled: !!user?.uid,
+    staleTime: Infinity,
+  });
+
+  return { userProfile: data };
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
     HomeOutlined,
@@ -9,14 +9,18 @@ import {
     UnorderedListOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Menu } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Menu, message } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
+import { removeCookie } from "typescript-cookie";
+import { keyInfo, keyToken } from "../../constants/constants";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase-config";
 
 const items: MenuProps["items"] = [
     {
-        key: 'admin',
-        label: 'Welcome Dao Cong Tri',
-        type: 'group',
+        key: "admin",
+        label: "Welcome Dao Cong Tri",
+        type: "group",
         children: [
             {
                 icon: <HomeOutlined />,
@@ -36,12 +40,12 @@ const items: MenuProps["items"] = [
             {
                 icon: <UnorderedListOutlined />,
                 key: "user",
-                label: "Users"
+                label: "Users",
             },
             {
                 icon: <UnorderedListOutlined />,
                 key: "category",
-                label: "Category"
+                label: "Category",
             },
             {
                 icon: <UnorderedListOutlined />,
@@ -61,12 +65,12 @@ const items: MenuProps["items"] = [
             {
                 icon: <QuestionCircleOutlined />,
                 key: "quiz",
-                label: "Quiz Attempts"
+                label: "Quiz Attempts",
             },
         ],
     },
     {
-        type: "divider"
+        type: "divider",
     },
     {
         key: "setting",
@@ -81,23 +85,50 @@ const items: MenuProps["items"] = [
             {
                 key: "logout",
                 icon: <LogoutOutlined />,
-                label: "Logout"
-            }
-        ]
-    }
-
+                label: "Logout",
+            },
+        ],
+    },
 ];
 const MenuNav = () => {
-    const [currentPath, setCurrentPath] = useState<string>("home")
+    const [currentPath, setCurrentPath] = useState<string>("home");
 
     const navigate = useNavigate();
 
+    const location = useLocation();
+
+    useEffect(() => {
+        const path = location.pathname.replace("/admin/", "")
+        setCurrentPath(path)
+    }, [location.pathname])
+
+    const handleLogout = async (): Promise<void> => {
+        try {
+            await signOut(auth);
+
+            removeCookie(keyInfo, {
+                path: "/",
+            });
+            removeCookie(keyToken, {
+                path: "/",
+            });
+
+            message.success("User signed out successfully", 2, () => navigate("/authen"));
+
+        } catch (error) {
+            if (error instanceof Error) {
+                message.error(error.message)
+                return
+            }
+        }
+    };
     const onClick: MenuProps["onClick"] = (e) => {
-        setCurrentPath(e.key)
+        setCurrentPath(e.key);
 
-        if (e.key !== "logout") navigate(`/admin/${e.key}`)
-        else console.log(e.key);
-
+        if (e.key !== "logout") navigate(`/admin/${e.key}`);
+        else {
+            handleLogout()
+        }
     };
 
     return (
@@ -105,6 +136,7 @@ const MenuNav = () => {
             theme="dark"
             mode="inline"
             defaultSelectedKeys={[currentPath]}
+            selectedKeys={[currentPath]}
             items={items}
             onClick={onClick}
         />

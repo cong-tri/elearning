@@ -17,8 +17,6 @@ const AdminUser = () => {
     const queryClient = useQueryClient();
 
     const [users, setUsers] = useState<IUsers[]>();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [id, setId] = useState<string>("0");
 
     useEffect(() => {
         if (!data?.users) return;
@@ -56,8 +54,8 @@ const AdminUser = () => {
                         className="btn btn-primary me-3"
                         type="button"
                         onClick={() => {
-                            setIsModalOpen(true);
-                            setId(record.id);
+                            data?.handleOpenModal();
+                            data?.setId(record.id);
                         }}
                     >
                         <i className="fa-solid fa-pen-to-square"></i>
@@ -99,23 +97,23 @@ const AdminUser = () => {
                                 <button
                                     className="btn btn-lg btn-outline-primary"
                                     type="button"
-                                    onClick={() => setIsModalOpen(true)}
+                                    onClick={() => data?.handleOpenModal()}
                                 >
                                     <i className="fa-solid fa-plus"></i> Create New User
                                 </button>
                                 <Modal
                                     title={
                                         <>
-                                            <h2 className="fw-bold">Create New User</h2>
+                                            <h2 className="fw-bold"> {data?.id ? "Update User" : "Create New User"}</h2>
                                         </>
                                     }
-                                    open={isModalOpen}
+                                    open={data?.isModalOpen}
                                     footer={false}
-                                    onOk={() => setIsModalOpen(false)}
-                                    onCancel={() => setIsModalOpen(false)}
+                                    onOk={() => data?.handleCloseModal()}
+                                    onCancel={() => data?.handleCloseModal()}
                                     width={1200}
                                 >
-                                    <FormAddNewUser id={id} />
+                                    <FormAddNewUser id={data?.id ?? ""} />
                                 </Modal>
                             </div>
                         </div>

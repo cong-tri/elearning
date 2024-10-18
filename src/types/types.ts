@@ -57,21 +57,40 @@ export interface IZooms {
 }
 
 export interface IUsers {
-  address: string;
-  user_id: string;
-  code: string;
   id: string;
+  address: string;
+  code: string;
+  created_at: Date | string;
+  created_by: string;
   email: string;
-  username: string;
   name: {
     firstname: string;
     lastname: string;
   };
   phone: string;
+  role: "admin" | "user";
+  user_id: string;
+  username: string;
+  description: string;
+  carts: ICourses[];
+}
+
+// for form input
+export type InputUser = {
+  id: string;
+  user_id: string;
+  code: string;
+  address: string;
+  email: string;
+  username: string;
+  firstname: string;
+  lastname: string;
+  phone: string;
+  role: "admin" | "user";
   created_at: Date | string;
   created_by: string;
-  role: "admin" | "user";
-}
+  description: string;
+};
 
 export interface IQuizs {
   id: string;
@@ -96,5 +115,10 @@ export type IDataMainProvider = {
 };
 
 export type IDataAdminProvider = {
+  id: string;
   users: IUsers[];
+  isModalOpen: boolean;
+  handleCloseModal: () => void;
+  handleOpenModal: () => void;
+  setId: (event: string) => void;
 };

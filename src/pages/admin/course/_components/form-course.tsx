@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
@@ -13,6 +13,7 @@ import Input from "../../../../components/input";
 import { message } from "antd";
 
 import { keyCollection } from "../../../../constants/constants";
+import { AdminContext } from "../../../../context/admin-provider";
 
 const defaultValue: ICourses = {
     id: "",
@@ -27,7 +28,10 @@ const defaultValue: ICourses = {
     created_by: "",
 }
 
-const FormAddNewCourse = ({ category, id }: { category: ICategory[]; id: string }) => {
+const FormAddNewCourse = ({ category, id }: { category: ICategory[]; id: string; }) => {
+
+    const { data: admin } = useContext(AdminContext);
+
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
@@ -65,6 +69,8 @@ const FormAddNewCourse = ({ category, id }: { category: ICategory[]; id: string 
                 refetchType: "all",
             });
             setFormData(defaultValue)
+            admin?.handleCloseModal()
+
         } else {
             await setDoc(doc(firebaseStore, keyCollection.courses, cour_id), data);
             message.success("Update course successfully", 2);
@@ -74,6 +80,8 @@ const FormAddNewCourse = ({ category, id }: { category: ICategory[]; id: string 
                 refetchType: "all"
             })
             setFormData(defaultValue)
+            admin?.handleCloseModal()
+
         }
     };
 
@@ -211,7 +219,7 @@ const FormAddNewCourse = ({ category, id }: { category: ICategory[]; id: string 
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className="col">
+                            <div className="col-12">
                                 <Input
                                     id="description"
                                     name="description"
