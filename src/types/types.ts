@@ -21,26 +21,37 @@ export interface ICourses {
 
 export interface IBlogs {
   id: string;
-  content_1: string;
-  content_2: string;
-  content_3: string;
+  content: {
+    content_first: string;
+    content_second: string;
+    content_third?: string;
+    content_four?: string;
+  };
   created_at: Date | string;
   created_by: string;
   date: string;
-  label_1: string;
-  label_2: string;
+  label: {
+    label_first: string;
+    label_second: string;
+    label_third?: string;
+    label_four?: string;
+  };
   title: string;
 }
 
 export interface IEvents {
   id: string;
-  content_1: string;
-  content_2: string;
+  content: {
+    content_first: string;
+    content_second: string;
+  };
   created_at: Date | string;
   created_by: string;
   date: string;
-  label_1: string;
-  label_2: string;
+  label: {
+    label_first: string;
+    label_second: string;
+  };
   title: string;
 }
 
@@ -72,7 +83,7 @@ export interface IUsers {
   user_id: string;
   username: string;
   description: string;
-  carts: ICourses[];
+  carts?: ICourses[];
 }
 
 // for form input

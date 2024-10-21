@@ -10,7 +10,7 @@ import { useGetQuiz } from "../hooks/quiz";
 import { useGetInfoUser } from "../hooks/user";
 
 export const MainContext = createContext(
-    {} as { data?: IDataMainProvider; userProfile: IUsers | undefined }
+    {} as { data?: IDataMainProvider; userProfile: IUsers | undefined; isAdmin?: boolean }
 );
 
 export const MainProvider = ({ children }: { children: React.ReactNode }) => {
@@ -20,8 +20,7 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
     const { events } = useGetEvent();
     const { zoom } = useGetZoom();
     const { quizs } = useGetQuiz();
-    const { userProfile } = useGetInfoUser()
-
+    const { userProfile, isAdmin } = useGetInfoUser()
 
     const data: IDataMainProvider = {
         categories: categories ?? [],
@@ -33,6 +32,6 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <MainContext.Provider value={{ data, userProfile }}>{children}</MainContext.Provider>
+        <MainContext.Provider value={{ data, userProfile, isAdmin }}>{children}</MainContext.Provider>
     );
 };

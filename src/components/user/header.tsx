@@ -1,4 +1,9 @@
 import { useNavigate } from "react-router-dom";
+import { getCookie, removeCookie } from "typescript-cookie";
+import { key } from "../../constants/constants";
+import { Dropdown, MenuProps, message } from "antd";
+import { auth } from "../../firebase-config";
+import { signOut } from "firebase/auth";
 
 type Link = {
     label: string;
@@ -30,6 +35,66 @@ const listLink: Link[] = [
 
 const Header = () => {
     const navigate = useNavigate();
+
+    const token = getCookie(key.uid) ?? "";
+    const user = token !== "" ? JSON.parse(token) : null;
+    const items: MenuProps["items"] = user && user.role === "admin" ?
+        [
+            {
+                key: "profile",
+                label: (
+                    <button className="btn" type="button" onClick={() => navigate("/profile")}>Profile</button>
+                ),
+            },
+            {
+                key: "admin",
+                label: (
+                    <button className="btn" type="button" onClick={() => navigate("/admin/home")}>Admin Page</button>
+                ),
+            },
+            {
+                key: "logout",
+                label: (
+                    <button className="btn btn-outline-danger" type="button" onClick={() => handleLogout()}>Logout</button>
+                ),
+            },
+        ] : [
+            {
+                key: "profile",
+                label: (
+                    <button className="btn" type="button" onClick={() => navigate("/profile")}>Profile</button>
+                ),
+            },
+            {
+                key: "logout",
+                label: (
+                    <button className="btn btn-outline-danger" type="button" onClick={() => handleLogout()}>Logout</button>
+                ),
+            },
+        ]
+    const handleLogout = async (): Promise<void> => {
+        try {
+            await signOut(auth);
+
+            removeCookie(key.info, {
+                path: "/",
+            });
+            removeCookie(key.token, {
+                path: "/",
+            });
+            removeCookie(key.uid, {
+                path: "/",
+            });
+
+            message.success("User signed out successfully", 2, () => navigate("/authen"));
+
+        } catch (error) {
+            if (error instanceof Error) {
+                message.error(error.message)
+                return
+            }
+        }
+    };
     return (
         <header className="bg-light shadow-sm w-100 fixed-top">
             <nav className="d-none d-xl-block py-4">
@@ -75,13 +140,26 @@ const Header = () => {
                             >
                                 <i className="fa-solid fa-cart-shopping"></i>
                             </button>
-                            <button
-                                className="btn btn-lg btn-outline-primary ms-3 me-4"
-                                type="button"
-                                onClick={() => navigate("/authen")}
-                            >
-                                <i className="fa-solid fa-user"></i>
-                            </button>
+                            {!user ? (
+                                <button
+                                    className="btn btn-lg btn-outline-primary ms-3 me-4"
+                                    type="button"
+                                    onClick={() => navigate("/authen")}
+                                >
+                                    <i className="fa-solid fa-user"></i>
+                                </button>
+                            ) : (
+                                <Dropdown menu={{ items }}>
+                                    <button
+                                        className="btn btn-lg btn-outline-primary ms-3 me-4"
+                                        type="button"
+                                    // onClick={() => navigate("/authen")}
+                                    >
+                                        <i className="fa-solid fa-user"></i>
+                                    </button>
+                                </Dropdown>
+                            )}
+
                             <button
                                 className="btn btn-primary btn-lg"
                                 type="button"

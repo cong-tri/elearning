@@ -39,14 +39,14 @@ const BlogDetail = () => {
                             </div>
                             <h1>{detail?.title}</h1>
                             <p>
-                                {detail?.content_1}
+                                {detail?.content.content_first}
                             </p>
                             <p>
-                                {detail?.content_2}
+                                {detail?.content.content_second}
                             </p>
-                            <h3>{detail?.label_1}</h3>
+                            <h3>{detail?.label.label_first}</h3>
                             <p>
-                                {detail?.content_3}
+                                {detail?.content.content_third}
                             </p>
                             <div className="row mb-4 align-items-center">
                                 <div className="col-md-4">
@@ -84,21 +84,14 @@ const BlogDetail = () => {
                                     </ul>
                                 </div>
                             </div>
-                            <h3>{detail?.label_2}</h3>
+                            <h3>{detail?.label.label_second}</h3>
                             <p>
                                 We have covered many special events such as fireworks, fairs,
                                 parades, races, walks, awards ceremonies, fashion shows,
                                 sporting events, and even a memorial service
                             </p>
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Curabitur vulputate vestibulum Phasellus rhoncus, dolor eget
-                                viverra pretium, dolor tellus aliquet nunc, vitae ultricies erat
-                                elit eu lacus. Vestibulum non justo consectetur, cursus ante,
-                                tincidunt sapien. Nulla quis diam sit amet turpis interdum
-                                accumsan quis nec enim. Vivamus faucibus ex sed nibh egestas
-                                elementum. Mauris et bibendum dui. Aenean consequat pulvinar
-                                luctus. Suspendisse consectetur tristique tortor.
+                                {detail?.content.content_four}
                             </p>
                             <hr />
                             <div className="row mb-3">

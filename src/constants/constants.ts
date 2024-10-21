@@ -10,9 +10,15 @@ export const keyCollection = {
   quizs: "quizs",
   authorize: "authorize",
 };
+export const key = {
+  token: "userToken",
+  info: "userInfo",
+  uid: "userUid",
+};
 
 export const keyToken = "userToken";
 export const keyInfo = "userInfo";
+
 // export const listCourses = [
 //   {
 //     title: "Modern JavaScript Frontend Development",

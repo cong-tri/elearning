@@ -10,9 +10,9 @@ import {
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu, message } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { removeCookie } from "typescript-cookie";
-import { keyInfo, keyToken } from "../../constants/constants";
+import { key } from "../../constants/constants";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase-config";
 
@@ -87,8 +87,18 @@ const items: MenuProps["items"] = [
                 icon: <LogoutOutlined />,
                 label: "Logout",
             },
+            {
+                key: "callback",
+                icon: <HomeOutlined />,
+                label: "Back to Home",
+            },
         ],
     },
+    // {
+    //     key: "homeuser",
+    //     icon: <HomeOutlined />,
+    //     label: "Back to Home",
+    // },
 ];
 const MenuNav = () => {
     const [currentPath, setCurrentPath] = useState<string>("home");
@@ -106,10 +116,13 @@ const MenuNav = () => {
         try {
             await signOut(auth);
 
-            removeCookie(keyInfo, {
+            removeCookie(key.info, {
                 path: "/",
             });
-            removeCookie(keyToken, {
+            removeCookie(key.token, {
+                path: "/",
+            });
+            removeCookie(key.uid, {
                 path: "/",
             });
 
@@ -124,10 +137,17 @@ const MenuNav = () => {
     };
     const onClick: MenuProps["onClick"] = (e) => {
         setCurrentPath(e.key);
+        console.log(e.key);
 
-        if (e.key !== "logout") navigate(`/admin/${e.key}`);
+        if (e.key !== "logout") {
+            navigate(`/admin/${e.key}`);
+        }
         else {
             handleLogout()
+        }
+
+        if (e.key === "callback") {
+            navigate(`/`);
         }
     };
 

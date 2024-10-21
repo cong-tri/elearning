@@ -126,7 +126,7 @@ const AdminBlog = () => {
                                                 aria-expanded="true"
                                                 aria-controls="content1"
                                             >
-                                                Content 1
+                                                Content
                                             </button>
                                         </p>
                                         <div
@@ -135,53 +135,10 @@ const AdminBlog = () => {
                                             data-bs-parent="#accordionExample"
                                         >
                                             <div className="accordion-body">
-                                                <p>{record.content_1}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="accordion-item">
-                                        <p className="accordion-header">
-                                            <button
-                                                className="accordion-button collapsed"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#content2"
-                                                aria-expanded="false"
-                                                aria-controls="content2"
-                                            >
-                                                Content 2
-                                            </button>
-                                        </p>
-                                        <div
-                                            id="content2"
-                                            className="accordion-collapse collapse"
-                                            data-bs-parent="#accordionExample"
-                                        >
-                                            <div className="accordion-body">
-                                                <p>{record.content_2}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="accordion-item">
-                                        <p className="accordion-header">
-                                            <button
-                                                className="accordion-button collapsed"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#content3"
-                                                aria-expanded="false"
-                                                aria-controls="content3"
-                                            >
-                                                Content 3
-                                            </button>
-                                        </p>
-                                        <div
-                                            id="content3"
-                                            className="accordion-collapse collapse"
-                                            data-bs-parent="#accordionExample"
-                                        >
-                                            <div className="accordion-body">
-                                                <p>{record.content_3}</p>
+                                                <p>{record.content.content_first}</p>
+                                                <p>{record.content.content_second}</p>
+                                                <p>{record.content.content_third}</p>
+                                                <p>{record.content.content_four}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -200,7 +157,7 @@ const AdminBlog = () => {
                                                 aria-expanded="true"
                                                 aria-controls="label1"
                                             >
-                                                Label 1
+                                                Label
                                             </button>
                                         </p>
                                         <div
@@ -209,30 +166,10 @@ const AdminBlog = () => {
                                             data-bs-parent="#accordionExample"
                                         >
                                             <div className="accordion-body">
-                                                <p>{record.label_1}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="accordion-item">
-                                        <p className="accordion-header">
-                                            <button
-                                                className="accordion-button collapsed"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#label2"
-                                                aria-expanded="false"
-                                                aria-controls="label2"
-                                            >
-                                                Label 2
-                                            </button>
-                                        </p>
-                                        <div
-                                            id="label2"
-                                            className="accordion-collapse collapse"
-                                            data-bs-parent="#accordionExample"
-                                        >
-                                            <div className="accordion-body">
-                                                <p>{record.label_2}</p>
+                                                <p>{record.label.label_first}</p>
+                                                <p>{record.label.label_second}</p>
+                                                <p>{record.label.label_third}</p>
+                                                <p>{record.label.label_four}</p>
                                             </div>
                                         </div>
                                     </div>

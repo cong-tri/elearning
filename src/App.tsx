@@ -10,6 +10,7 @@ import AdminLayout from "./layout/admin/layout";
 {/** pages for user */ }
 import Home from "./pages/home/home";
 import Authen from "./pages/authen/authen";
+import Profile from "./pages/profile/profile";
 import Course from "./pages/course/course";
 import CourseDetail from "./pages/course-detail/course-detail";
 import Cart from "./pages/cart/cart";
@@ -55,6 +56,7 @@ const App: React.FC = () => {
             <Route path="cart" element={<Cart />} />
             <Route path="checkout" element={<Checkout />} />
             <Route path="authen" element={<Authen />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
           {/** For admin */}
           <Route element={

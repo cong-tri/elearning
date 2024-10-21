@@ -14,22 +14,34 @@ import { useQueryClient } from "@tanstack/react-query";
 import { keyCollection } from "../../../../constants/constants";
 import { AdminContext } from "../../../../context/admin-provider";
 
-const defaultValue: IEvents = {
+type InputEvent = {
+    id: string;
+    content_first: string;
+    content_second: string;
+    created_at: Date | string;
+    created_by: string;
+    date: string;
+    label_first: string;
+    label_second: string;
+    title: string;
+};
+
+const defaultValue: InputEvent = {
     id: "",
-    title: "",
-    content_1: "",
-    content_2: "",
-    label_1: "",
-    label_2: "",
+    content_first: "",
+    content_second: "",
     created_at: moment().format(),
     created_by: "Ngo Quoc Linh",
     date: "",
+    label_first: "",
+    label_second: "",
+    title: "",
 };
 
 const FormEvent = ({ id }: { id: string }) => {
     const queryClient = useQueryClient();
 
-    const [formData, setFormData] = useState<IEvents>(defaultValue);
+    const [formData, setFormData] = useState<InputEvent>(defaultValue);
     const { data: admin } = useContext(AdminContext)
 
     const handleChange = (
@@ -54,7 +66,22 @@ const FormEvent = ({ id }: { id: string }) => {
             return;
         }
 
-        const { id: eve_id, ...data } = formData;
+        const valueInput: IEvents = {
+            id: formData.id,
+            content: {
+                content_first: formData.content_first,
+                content_second: formData.content_second,
+            },
+            label: {
+                label_first: formData.label_first,
+                label_second: formData.label_second,
+            },
+            created_at: formData.created_at,
+            created_by: formData.created_by,
+            date: formData.date,
+            title: formData.title,
+        };
+        const { id: eve_id, ...data } = valueInput;
 
         if (eve_id === "") {
             await addDoc(collection(firebaseStore, keyCollection.events), data);
@@ -67,7 +94,8 @@ const FormEvent = ({ id }: { id: string }) => {
             });
 
             setFormData(defaultValue);
-            admin?.handleCloseModal()
+            admin?.handleCloseModal();
+
         } else {
             await setDoc(doc(firebaseStore, keyCollection.events, eve_id), data);
 
@@ -79,7 +107,7 @@ const FormEvent = ({ id }: { id: string }) => {
             });
 
             setFormData(defaultValue)
-            admin?.handleCloseModal()
+            admin?.handleCloseModal();
         }
     };
 
@@ -90,9 +118,19 @@ const FormEvent = ({ id }: { id: string }) => {
                     if (snapshot.exists()) {
                         const data = snapshot.data() as IEvents;
                         data.id = snapshot.id;
-                        console.log(data);
 
-                        setFormData(data);
+                        const valueInput: InputEvent = {
+                            id: data.id,
+                            content_first: data.content.content_first,
+                            content_second: data.content.content_second,
+                            created_at: data.created_at,
+                            created_by: data.created_by,
+                            date: data.date,
+                            label_first: data.label.label_first,
+                            label_second: data.label.label_second,
+                            title: data.title,
+                        };
+                        setFormData(valueInput);
                     } else setFormData(defaultValue);
                 }
             );
@@ -121,40 +159,27 @@ const FormEvent = ({ id }: { id: string }) => {
                             </div>
                             <div className="col">
                                 <Input
-                                    id="date"
-                                    name="date"
-                                    label="Date"
+                                    id="label_first"
+                                    label="Label First"
+                                    name="label_first"
                                     classnameDiv="form-floating mb-4"
                                     classnameInput="form-control form-control-lg"
                                     type="text"
                                     maxlength={100}
-                                    value={formData.date}
+                                    value={formData.label_first}
                                     onChange={handleChange}
                                 />
                             </div>
                             <div className="col">
                                 <Input
-                                    id="label_1"
-                                    label="Label 1"
-                                    name="label_1"
+                                    id="label_second"
+                                    label="Label Second"
+                                    name="label_second"
                                     classnameDiv="form-floating mb-4"
                                     classnameInput="form-control form-control-lg"
                                     type="text"
                                     maxlength={100}
-                                    value={formData.label_1}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="col">
-                                <Input
-                                    id="label_2"
-                                    label="Label 2"
-                                    name="label_2"
-                                    classnameDiv="form-floating mb-4"
-                                    classnameInput="form-control form-control-lg"
-                                    type="text"
-                                    maxlength={100}
-                                    value={formData.label_2}
+                                    value={formData.label_second}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -166,7 +191,6 @@ const FormEvent = ({ id }: { id: string }) => {
                                     classnameDiv="form-floating mb-4"
                                     classnameInput="form-control form-control-lg"
                                     type="text"
-                                    readonly={true}
                                     value={formData.created_by}
                                     onChange={handleChange}
                                 />
@@ -184,29 +208,42 @@ const FormEvent = ({ id }: { id: string }) => {
                                     readonly={true}
                                 />
                             </div>
-                            <div className="col-12">
+                            <div className="col">
                                 <Input
-                                    id="content_1"
-                                    name="content_1"
-                                    label="Content 1"
+                                    id="date"
+                                    name="date"
+                                    label="Date"
                                     classnameDiv="form-floating mb-4"
-                                    classnameInput="form-control form-control-lg h-100"
-                                    rows={4}
-                                    maxlength={250}
-                                    value={formData.content_1}
+                                    classnameInput="form-control form-control-lg"
+                                    type="date"
+                                    maxlength={100}
+                                    value={formData.date}
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className="col-12">
+                            <div className="col-6">
                                 <Input
-                                    id="content_2"
-                                    name="content_2"
-                                    label="Content 2"
+                                    id="content_first"
+                                    name="content_first"
+                                    label="Content First"
                                     classnameDiv="form-floating mb-4"
                                     classnameInput="form-control form-control-lg h-100"
                                     rows={4}
                                     maxlength={250}
-                                    value={formData.content_2}
+                                    value={formData.content_first}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className="col-6">
+                                <Input
+                                    id="content_second"
+                                    name="content_second"
+                                    label="Content Second"
+                                    classnameDiv="form-floating mb-4"
+                                    classnameInput="form-control form-control-lg h-100"
+                                    rows={4}
+                                    maxlength={250}
+                                    value={formData.content_second}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -225,19 +262,19 @@ const FormEvent = ({ id }: { id: string }) => {
 
 export default FormEvent;
 
-const validateFormData = (data: IEvents) => {
+const validateFormData = (data: InputEvent) => {
     const errors: { [key: string]: string } = {};
 
     if (!data.title.trim()) {
         errors.title = "Title is required";
     }
 
-    if (!data.content_1.trim() || !data.content_2.trim()) {
+    if (!data.content_first.trim() || !data.content_second.trim()) {
         errors.content = "Contents is required";
     }
 
-    if (!data.label_1.trim() || !data.label_2.trim()) {
-        errors.content = "Labels is required";
+    if (!data.label_first.trim() || !data.label_second.trim()) {
+        errors.label = "Labels is required";
     }
 
     return errors;

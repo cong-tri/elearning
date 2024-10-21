@@ -26,7 +26,7 @@ const EventDetail = () => {
                 <div className="row">
                     <div className="col-lg-8">
                         <div className="mb-3">
-                            <span className="badge bg-danger">Mechanical</span>
+                            <span className="badge bg-primary">Mechanical</span>
                             <h2 className="fw-bold mt-2">
                                 {detail?.title}
                             </h2>
@@ -57,10 +57,10 @@ const EventDetail = () => {
                                 className="img-fluid mt-3"
                             />
                             <div className="mt-4">
-                                <h3>{detail?.label_1}</h3>
-                                <p>{detail?.content_1}</p>
-                                <h3>{detail?.label_2}</h3>
-                                <p>{detail?.content_2}</p>
+                                <h3>{detail?.label.label_first}</h3>
+                                <p>{detail?.content.content_first}</p>
+                                <h3>{detail?.label.label_second}</h3>
+                                <p>{detail?.content.content_second}</p>
                                 <h3>This event will allow participants to:</h3>
                                 <ul className="list-unstyled">
                                     <li>
@@ -84,26 +84,26 @@ const EventDetail = () => {
                         <div className="bg-white p-4 rounded shadow-sm mb-4">
                             <div className="d-flex align-items-center justify-content-between mb-3">
                                 <div>
-                                    <span className="fs-4 fw-bold text-danger">$32.00</span>
+                                    <span className="fs-4 fw-bold text-primary">$32.00</span>
                                     <del className="ms-2 text-muted">$67.00</del>
                                 </div>
-                                <span className="badge bg-danger">68% OFF</span>
+                                <span className="badge bg-primary">68% OFF</span>
                             </div>
                             <div className="mb-3">
                                 <div className="d-flex align-items-center mb-2">
-                                    <i className="far fa-calendar-alt me-2 text-danger" />
+                                    <i className="far fa-calendar-alt me-2 text-primary" />
                                     <span>End: July 26, 2024 12:30 am</span>
                                 </div>
                                 <div className="d-flex align-items-center mb-2">
-                                    <i className="far fa-clock me-2 text-danger" />
+                                    <i className="far fa-clock me-2 text-primary" />
                                     <span>Time: 10:45 AM-01:30 PM</span>
                                 </div>
                                 <div className="d-flex align-items-center">
-                                    <i className="fas fa-map-marker-alt me-2 text-danger" />
+                                    <i className="fas fa-map-marker-alt me-2 text-primary" />
                                     <span>Venue: New York, TX 82760, US</span>
                                 </div>
                             </div>
-                            <button className="btn btn-danger w-100 mb-3">
+                            <button className="btn btn-primary w-100 mb-3">
                                 Enroll Now Course
                             </button>
                         </div>

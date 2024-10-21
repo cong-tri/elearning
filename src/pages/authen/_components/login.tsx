@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { setCookie } from "typescript-cookie";
 import { message, Modal } from "antd";
-import { keyCollection, keyInfo, keyToken } from "../../../constants/constants";
+import { key, keyCollection } from "../../../constants/constants";
 import { auth, firebaseStore } from "../../../firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 import { IUsers } from "../../../types/types";
@@ -14,8 +14,8 @@ type Login = {
 };
 
 const defaultValue: Login = {
-    email: "daocongtri20031609@gmail.com",
-    password: "1234567",
+    email: "",
+    password: "",
 };
 const Login = () => {
     const navigate = useNavigate();
@@ -45,13 +45,12 @@ const Login = () => {
 
                 const token: string = await user.getIdToken();
 
-                setCookie(keyToken, token, {
+                setCookie(key.token, token, {
                     path: "/",
                     secure: false,
                     sameSite: "strict",
                     expires: 60 * 60 * 24,
                 });
-
                 const userDocRef = doc(firebaseStore, keyCollection.users, user.uid);
                 const userDoc = await getDoc(userDocRef);
 
@@ -59,16 +58,30 @@ const Login = () => {
                     const data = userDoc.data() as IUsers;
                     data.id = userDoc.id;
 
-                    setCookie(keyInfo, JSON.stringify(data), {
+                    setCookie(key.uid, JSON.stringify({
+                        uid: user.uid,
+                        role: data.role,
+                        email: user.email
+                    }), {
                         path: "/",
                         secure: false,
                         sameSite: "strict",
                         expires: 60 * 60 * 24,
                     });
+
+                    setCookie(key.info, JSON.stringify(data), {
+                        path: "/",
+                        secure: false,
+                        sameSite: "strict",
+                        expires: 60 * 60 * 24,
+                    });
+                    if (data.role === "admin") {
+                        message.success("Entered Admin Page Successfully", 2, () => navigate("/admin/home"));
+                    }
                 }
+                message.success("Login successfully", 2);
             }
 
-            message.success("Login successfully", 2, () => navigate("/admin/home"));
         } catch (error) {
             if (error instanceof Error) {
                 message.error(error.message);

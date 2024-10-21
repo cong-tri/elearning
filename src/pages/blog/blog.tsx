@@ -34,7 +34,7 @@ const Blog = () => {
                                                     {items.title}
                                                 </h2>
                                                 <p className="text-secondary my-3">
-                                                    {items.content_1}
+                                                    {items.content.content_first}
                                                 </p>
                                                 <button
                                                     className="btn btn-outline-primary"

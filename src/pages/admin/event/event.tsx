@@ -123,43 +123,21 @@ const AdminEvent = () => {
                                                 className="accordion-button"
                                                 type="button"
                                                 data-bs-toggle="collapse"
-                                                data-bs-target="#content1"
+                                                data-bs-target="#content"
                                                 aria-expanded="true"
-                                                aria-controls="content1"
+                                                aria-controls="content"
                                             >
-                                                Content 1
+                                                Content
                                             </button>
                                         </p>
                                         <div
-                                            id="content1"
+                                            id="content"
                                             className="accordion-collapse collapse"
                                             data-bs-parent="#accordionExample"
                                         >
                                             <div className="accordion-body">
-                                                <p>{record.content_1}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="accordion-item">
-                                        <p className="accordion-header">
-                                            <button
-                                                className="accordion-button collapsed"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#content2"
-                                                aria-expanded="false"
-                                                aria-controls="content2"
-                                            >
-                                                Content 2
-                                            </button>
-                                        </p>
-                                        <div
-                                            id="content2"
-                                            className="accordion-collapse collapse"
-                                            data-bs-parent="#accordionExample"
-                                        >
-                                            <div className="accordion-body">
-                                                <p>{record.content_2}</p>
+                                                <p>{record.content.content_first}</p>
+                                                <p>{record.content.content_second}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -174,43 +152,21 @@ const AdminEvent = () => {
                                                 className="accordion-button"
                                                 type="button"
                                                 data-bs-toggle="collapse"
-                                                data-bs-target="#label1"
+                                                data-bs-target="#label"
                                                 aria-expanded="true"
-                                                aria-controls="label1"
+                                                aria-controls="label"
                                             >
-                                                Label 1
+                                                Label
                                             </button>
                                         </p>
                                         <div
-                                            id="label1"
+                                            id="label"
                                             className="accordion-collapse collapse"
                                             data-bs-parent="#accordionExample"
                                         >
                                             <div className="accordion-body">
-                                                <p>{record.label_1}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="accordion-item">
-                                        <p className="accordion-header">
-                                            <button
-                                                className="accordion-button collapsed"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#label2"
-                                                aria-expanded="false"
-                                                aria-controls="label2"
-                                            >
-                                                Label 2
-                                            </button>
-                                        </p>
-                                        <div
-                                            id="label2"
-                                            className="accordion-collapse collapse"
-                                            data-bs-parent="#accordionExample"
-                                        >
-                                            <div className="accordion-body">
-                                                <p>{record.label_2}</p>
+                                                <p>{record.label.label_first}</p>
+                                                <p>{record.label.label_second}</p>
                                             </div>
                                         </div>
                                     </div>
