@@ -7,7 +7,7 @@ import { message } from "antd";
 
 import moment from "moment";
 
-import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { firebaseStore } from "../../../../firebase-config";
 
 import Input from "../../../../components/input";
@@ -26,7 +26,7 @@ const defaultValue: InputUser = {
     lastname: "",
     phone: "",
     role: "user",
-    created_at: moment().format(),
+    created_at: moment().format() as string,
     created_by: "Dao Cong Tri",
     description: ""
 }
@@ -46,6 +46,18 @@ const FormUser = ({ id }: { id: string }) => {
         setFormData({ ...formData, [e.currentTarget.name]: e.currentTarget.value });
     };
 
+    const generateUserCode = async (role: string) => {
+        const isAdmin = role === "admin" ? 0 : 1;
+
+        const currentNumber = admin?.users.length ?? 0 + 1;
+        console.log(currentNumber);
+
+        const userCode = `EL-${isAdmin}-00${currentNumber}`;
+        console.log(userCode);
+
+        return userCode;
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -56,24 +68,16 @@ const FormUser = ({ id }: { id: string }) => {
             });
             return;
         }
-
+        const generatedCode = await generateUserCode(formData.role);
+        console.log(generatedCode);
 
         const newData: IUsers = {
-            address: formData.address,
-            user_id: formData.user_id,
-            code: formData.code,
-            id: formData.id,
-            email: formData.email,
-            username: formData.username,
+            ...formData,
             name: {
                 firstname: formData.firstname,
                 lastname: formData.lastname,
             },
-            phone: formData.phone,
-            created_at: formData.created_at as string,
-            created_by: formData.created_by,
-            description: formData.description,
-            role: formData.role,
+            code: formData.code,
             carts: []
         }
         console.log(formData);
@@ -115,22 +119,11 @@ const FormUser = ({ id }: { id: string }) => {
                     if (snapshot.exists()) {
                         const data = snapshot.data() as IUsers;
                         data.id = snapshot.id;
-                        console.log(data);
 
                         const inputValue: InputUser = {
-                            id: data.id,
-                            user_id: data.user_id,
-                            code: data.code,
-                            address: data.address,
-                            email: data.email,
-                            username: data.username,
+                            ...data,
                             firstname: data.name.firstname,
-                            lastname: data.name.lastname,
-                            phone: data.phone,
-                            role: data.role,
-                            description: data.description,
-                            created_at: data.created_at,
-                            created_by: data.created_by,
+                            lastname: data.name.lastname
                         }
 
                         setFormData(inputValue);
@@ -139,6 +132,7 @@ const FormUser = ({ id }: { id: string }) => {
             );
         }
     }, [id]);
+
     return (
         <>
             <div className="card">
@@ -155,6 +149,7 @@ const FormUser = ({ id }: { id: string }) => {
                                     type="text"
                                     maxlength={100}
                                     autofocus={true}
+                                    readonly={true}
                                     onChange={handleChange}
                                     value={formData.code}
                                 />
@@ -307,9 +302,6 @@ const validateFormData = (data: InputUser) => {
 
     if (!data.username.trim()) {
         errors.username = "Username is required";
-    }
-    if (!data.code.trim()) {
-        errors.code = "Code is required";
     }
     if (!data.address.trim()) {
         errors.address = "Address is required";

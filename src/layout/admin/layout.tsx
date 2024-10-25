@@ -1,31 +1,27 @@
-import React, { useContext } from "react";
+import React, { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
-import { Avatar, Layout, theme } from "antd";
+import { Avatar, Breadcrumb, Layout, theme } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 
 import MenuNav from "../../components/admin/menu";
-import { MainContext, MainProvider } from "../../context/main-provider";
+import { MainProvider } from "../../context/main-provider";
 import { AdminProvider } from "../../context/admin-provider";
-import { RightOutlined, UserOutlined } from "@ant-design/icons";
+
+import { getCookie } from "typescript-cookie";
+
+import { key } from "../../constants/constants";
+import { IUsers } from "../../types/types";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-const siderStyle: React.CSSProperties = {
-    overflow: "auto",
-    width: "auto",
-    height: "100vh",
-    position: "fixed",
-    insetInlineStart: 0,
-    top: 0,
-    bottom: 0,
-    scrollbarWidth: "thin",
-    scrollbarColor: "unset",
-    maxWidth: "auto",
-    maxHeight: "auto",
-};
-
 const AdminLayout: React.FC = () => {
-    const { userProfile } = useContext(MainContext)
+    const [collapsed, setCollapsed] = useState(false);
+
+    const token: string = getCookie(key.info) ?? ""
+
+    const user = token !== "" ? JSON.parse(token) as IUsers : null
+
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -35,24 +31,38 @@ const AdminLayout: React.FC = () => {
 
     return (
         <MainProvider>
-            <Layout hasSider>
-                <Sider style={siderStyle}>
+            <Layout style={{ minHeight: '100vh' }}>
+                <Sider
+                    collapsible
+                    collapsed={collapsed}
+                    onCollapse={(value) => setCollapsed(value)}
+                >
                     <div className="demo-logo-vertical" />
                     <MenuNav />
                 </Sider>
-                <Layout style={{ marginInlineStart: 200 }}>
-                    <Header className="bg-light border-bottom border-2 shadow-lg py-4">
+                <Layout>
+                    <Header className="bg-light border-bottom border-2 shadow-lg py-2">
                         <div className="hstack gap-3">
                             <div>
-                                <h4>
-                                    {" "}
-                                    <span className="text-secondary">Admin</span>{" "}
-                                    <RightOutlined /> <span className="text-capitalize">{pathname}</span>
-                                </h4>
+                                <Breadcrumb
+                                    separator=">"
+                                    style={{ fontSize: 30, textTransform: "capitalize", fontWeight: "bold" }}
+                                    items={[
+                                        {
+                                            title: "Admin",
+                                        },
+                                        {
+                                            title: pathname,
+                                        }
+                                    ]}
+                                />
                             </div>
                             <div className="ms-auto">
                                 <Avatar size={50} icon={<UserOutlined />} />
-                                <span className="ms-2">Welcome {userProfile?.name.firstname} {userProfile?.name.lastname}</span>
+                                <span className="ms-2">
+                                    Welcome {user?.name.firstname}{" "}
+                                    {user?.name.lastname}
+                                </span>
                             </div>
                         </div>
                     </Header>
@@ -70,7 +80,7 @@ const AdminLayout: React.FC = () => {
                         </div>
                     </Content>
                     <Footer style={{ textAlign: "center" }}>
-                        Ant Design ©{new Date().getFullYear()} Created by Ant UED
+                        COPYRIGHT &copy; {new Date().getFullYear()} Created by E-LEARNING TEAM
                     </Footer>
                 </Layout>
             </Layout>

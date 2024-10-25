@@ -40,6 +40,16 @@ const AdminUser = () => {
             key: "email",
         },
         {
+            title: "Phone",
+            dataIndex: "phone",
+            key: "phone",
+        },
+        {
+            title: "Address",
+            dataIndex: "address",
+            key: "address",
+        },
+        {
             title: "Role",
             dataIndex: "role",
             key: "role",
@@ -119,29 +129,6 @@ const AdminUser = () => {
                         </div>
                     </>
                 )}
-                expandRowByClick
-                expandable={{
-                    expandedRowRender: (record) => (
-                        <>
-                            <div>
-                                <p>
-                                    Firstname:{" "}
-                                    <span className="ms-4">{record.name.firstname}</span>
-                                </p>
-                                <p>
-                                    Lastname: <span className="ms-4">{record.name.lastname}</span>
-                                </p>
-                                <p>
-                                    Phone: <span className="ms-4">{record.phone}</span>
-                                </p>
-                                <p>
-                                    Address: <span className="ms-4">{record.address}</span>
-                                </p>
-                            </div>
-                        </>
-                    ),
-                    rowExpandable: (record) => record.username !== "Not Expandable",
-                }}
             />
         </>
     );

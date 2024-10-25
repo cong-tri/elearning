@@ -24,7 +24,7 @@ export const useGetUser = () => {
     queryFn: () => {
       const q = query(
         collection(firebaseStore, keyCollection.users),
-        orderBy("user_id")
+        orderBy("code")
       );
       getDocs(q).then((querySnapshot) => {
         const data = querySnapshot.docs.map((doc) => {

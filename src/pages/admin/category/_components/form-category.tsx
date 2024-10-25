@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import Input from "../../../../components/input";
 
@@ -24,7 +23,6 @@ const defaultValue: ICategory = {
 };
 
 const FormAddNewCategory = ({ id }: { id: string }) => {
-    const navigate = useNavigate();
     const queryClient = useQueryClient();
 
     const { data: admin } = useContext(AdminContext)
@@ -81,20 +79,27 @@ const FormAddNewCategory = ({ id }: { id: string }) => {
     };
 
     useEffect(() => {
+        if (admin?.isModalOpen === false && id === "0") {
+            console.log("id >>>", id);
+
+            setFormData(defaultValue)
+        }
+        console.log(admin?.isModalOpen);
+        console.log(id);
+
         if (id !== "0") {
             getDoc(doc(collection(firebaseStore, keyCollection.categories), id)).then(
                 (snapshot) => {
                     if (snapshot.exists()) {
                         const data = snapshot.data() as ICategory;
                         data.id = snapshot.id;
-                        console.log(data);
 
                         setFormData(data);
                     } else setFormData(defaultValue);
                 }
             );
         }
-    }, [id, navigate]);
+    }, [id, admin?.isModalOpen]);
 
     return (
         <>

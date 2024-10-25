@@ -5,14 +5,11 @@ import { IDataAdminProvider } from "../types/types";
 
 export const AdminContext = createContext({} as { data?: IDataAdminProvider });
 
-export const AdminProvider = ({
-    children,
-}: {
-    children: React.ReactNode;
-}) => {
+export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
     const { users } = useGetUser();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    // const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [id, SetID] = useState<string>("0");
 
@@ -22,8 +19,8 @@ export const AdminProvider = ({
         isModalOpen,
         handleCloseModal: () => setIsModalOpen(false),
         handleOpenModal: () => setIsModalOpen(true),
-        setId: (event: string) => SetID(event)
-    }
+        setId: (event: string) => SetID(event),
+    };
 
     return (
         <AdminContext.Provider value={{ data }}>{children}</AdminContext.Provider>

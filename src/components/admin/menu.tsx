@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
 
 import {
+    BookOutlined,
+    DatabaseOutlined,
+    DesktopOutlined,
     HomeOutlined,
     LogoutOutlined,
     ProfileOutlined,
     QuestionCircleOutlined,
+    ReadOutlined,
     SettingOutlined,
-    UnorderedListOutlined,
+    TeamOutlined,
+    UserOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu, message } from "antd";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { removeCookie } from "typescript-cookie";
 import { key } from "../../constants/constants";
 import { signOut } from "firebase/auth";
@@ -33,32 +38,37 @@ const items: MenuProps["items"] = [
                 label: "My Profile",
             },
             {
-                icon: <UnorderedListOutlined />,
+                icon: <UserOutlined />,
+                key: "teachers",
+                label: "Teachers",
+            },
+            {
+                icon: <ReadOutlined />,
                 key: "course",
                 label: "Courses",
             },
             {
-                icon: <UnorderedListOutlined />,
+                icon: <TeamOutlined />,
                 key: "user",
                 label: "Users",
             },
             {
-                icon: <UnorderedListOutlined />,
+                icon: <DatabaseOutlined />,
                 key: "category",
                 label: "Category",
             },
             {
-                icon: <UnorderedListOutlined />,
+                icon: <BookOutlined />,
                 key: "blog",
                 label: "Blog",
             },
             {
-                icon: <UnorderedListOutlined />,
+                icon: <BookOutlined />,
                 key: "event",
                 label: "Event",
             },
             {
-                icon: <UnorderedListOutlined />,
+                icon: <DesktopOutlined />,
                 key: "zoom",
                 label: "Zoom",
             },

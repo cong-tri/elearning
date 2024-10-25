@@ -99,7 +99,7 @@ const Cart = () => {
             <section className="container my-4 my-xl-5">
                 {!userProfile ? (
                     <div>You have to login to buy course</div>
-                ) : userProfile.carts.length === 0 ? (
+                ) : userProfile?.carts?.length === 0 ? (
                     <div>Your cart is empty</div>
                 ) : (
                     <div className="table-responsive">
@@ -125,7 +125,7 @@ const Cart = () => {
                                         TOTAL
                                     </th>
                                     <th scope="col" className="fs-4">
-                                        REMOVE
+                                        ACTION
                                     </th>
                                 </tr>
                             </thead>
